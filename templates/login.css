@@ -1,0 +1,11 @@
+.formbox {
+	margin: 25px auto; 
+	width:30%; 
+	border: 1px outset #D0D0D0; 
+	border-radius: 4px; 
+	box-shadow: 2px 2px 4px grey;
+}
+
+.form-control {
+	padding:15px;
+}

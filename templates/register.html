@@ -5,9 +5,9 @@
 	</head>
 <body>
 	<div class="formbox" style="margin: 25px auto; width:30%;border-top: 1px solid #D0D0D0;border-left: 1px solid #D0D0D0;border-radius: 4px; box-shadow: 2px 2px 4px grey;">
-	<div class="container" id="login" style="padding: 15px 15px 15px 15px !important;max-width: inherit !important;min-width: inherit !important;">
-	<h1>Login Form</h1>
-	<form class="login_form" action="/login_check" method="post">
+	<div class="container" id="register" style="padding: 15px 15px 15px 15px !important;max-width: inherit !important;min-width: inherit !important;">
+	<h1>Register Form</h1>
+	<form class="login_form" action="/register" method="post">
 		<div class="form-group" style="margin-bottom:16px; margin-right:15px;">
 		<label for="username">Username</label>
 		<input class="form-control" name="username" id="username" style="width:100%; padding: 5px;"/>
@@ -16,10 +16,15 @@
 		<label for="password">Password</label>
 		<input class="form-control" name="password" id="password" style="width:100%; padding: 5px;"/>
 		</div>
-		<button class="btn btn-primary" type="submit" style="width:40%;padding:10px 0px; margin-right:20px;color:#fff; border-radius:4px; border: 1px outset #d0d0d0;box-shadow: 2px 2px 4px grey;background-color:#007bff">Login</button>
+		<div class="form-group" style="margin-bottom:16px; margin-right:15px;">
+		<label for="address">Address:</label>
+		<textarea class="form-control" name="address" id="address" rows="3" style="width:100%; padding: 5px;"></textarea>
+		</div>
+		<button class="btn btn-primary" type="submit" style="width:40%;padding:10px 0px; margin-right:20px;color:#fff; border-radius:4px; border: 1px outset #d0d0d0;box-shadow: 2px 2px 4px grey;background-color:#007bff">Register</button>
 		<a href="/register">Register</a>
 	</form>
 	</div>
 	</div>
 </body>
 </html>
+

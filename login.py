@@ -1,22 +1,25 @@
 from flask import Flask, jsonify, request, render_template, redirect, url_for, session, Blueprint
+from login_form import Loginform
 import sqlite3
 
 login_page=Blueprint("login_page", __name__, template_folder="templates")
 
-@login_page.route("/login")
+@login_page.route("/login", methods=["POST","GET"])
 def login():
-	return render_template("login.html")
-	
-check_page=Blueprint("check_page", __name__, template_folder="templates")
+	form = Loginform()
+	msg=""
+	if form.validate_on_submit():
+		login_tuple=(form.username.data,form.password.data)
+		if login_check(login_tuple):
+			return redirect("/")
+		msg="username or password is incorrect."
+	return render_template("login.html", form=form, msg=msg)
 
-@check_page.route("/login_check", methods=["POST"])
-def login_check():
-	result = request.form.to_dict()
-	login_data = (result["username"], result["password"])
+def login_check(login_data):
 	lstatus = check_login(login_data)
 	if lstatus:
-		session["uid"] = result["username"]
-	return redirect(url_for("index"))
+		session["uid"] = login_data[0]
+		return True
 
 def check_login(ldata):
 	conn = sqlite3.connect("./database/bookstore.db")

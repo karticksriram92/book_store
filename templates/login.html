@@ -1,27 +1,34 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<link href={{ url_for('static', filename='./templates/login.css') }}>
-	</head>
-<body>
-	<div class="formbox" style="margin: 25px auto; width:30%;border-top: 1px solid #D0D0D0;border-left: 1px solid #D0D0D0;border-radius: 4px; box-shadow: 2px 2px 4px grey;">
+{% extends "base.html" %}
+{% block title %}
+<link href={{ url_for('static', filename='./templates/login.css') }}>
+{% endblock %}
+
+{% block body %}
+	<div class="formbox" style="margin: 50px auto; width:30%;border-top: 1px solid #D0D0D0;border-left: 1px solid #D0D0D0;border-radius: 4px; box-shadow: 2px 2px 4px grey;">
 	<div class="container" id="login" style="padding: 15px 15px 15px 15px !important;max-width: inherit !important;min-width: inherit !important;">
 	<h1>Login Form</h1>
-	<form class="login_form" action="/login_check" method="post">
+	<form class="login_form" action="/login" method="post">
+		{{ form.csrf_token() }}
 		<div class="form-group" style="margin-bottom:16px; margin-right:15px;">
-		<label for="username">Username</label>
-		<input class="form-control" name="username" id="username" style="width:100%; padding: 5px;"/>
+		{{ form.username.label }}
+		{{ form.username(class="form-control", style="width:100%; padding:5px;") }}
 		</div>
-		{{  }}
+		{% for error in form.username.errors %}
+			<span style="color: black;">[{{ error }}]</span>
+		{% endfor %}
 		<div class="form-group" style="margin-bottom:16px; margin-right:15px;">
-		<label for="password">Password</label>
-		<input class="form-control" name="password" id="password" style="width:100%; padding: 5px;"/>
+		{{ form.password.label }}
+		{{ form.password(class="form-control", style="width:100%; padding:5px;") }}
+		{% for error in form.password.errors %}
+			<span style="color: black;">[{{ error }}]</span>
+		{% endfor %}
 		</div>
-		{{  }}
-		<button class="btn btn-primary" type="submit" style="width:40%;padding:10px 0px; margin-right:20px;color:#fff; border-radius:4px; border: 1px outset #d0d0d0;box-shadow: 2px 2px 4px grey;background-color:#007bff">Login</button>
+		{% if msg %}
+		<div class="alert alert-warning alert-dismissable fade show">{{ msg }}</div>
+		{% endif %}
+		{{ form.submit(class="btn btn-primary", style="width:40%;padding:10px 0px; margin-right:20px;color:#fff; border-radius:4px; border: 1px outset #d0d0d0;box-shadow: 2px 2px 4px grey;background-color:#007bff") }}
 		<a href="/register">Register</a>
 	</form>
 	</div>
 	</div>
-</body>
-</html>
+{% endblock %}

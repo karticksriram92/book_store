@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, render_template, redirect, url_for, s
 from flask_restful import Resource, Api
 import sqlite3, uuid
 from login import login_page, register_page
+from home import home_page
 
 app = Flask(__name__, template_folder="templates")
 #api = Api(app)
@@ -10,6 +11,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 app.register_blueprint(login_page)
 app.register_blueprint(register_page)
+app.register_blueprint(home_page)
 
 @app.route("/")
 def index():

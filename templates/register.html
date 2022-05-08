@@ -1,30 +1,59 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<link href={{ url_for('static', filename='./templates/login.css') }}>
-	</head>
-<body>
-	<div class="formbox" style="margin: 25px auto; width:30%;border-top: 1px solid #D0D0D0;border-left: 1px solid #D0D0D0;border-radius: 4px; box-shadow: 2px 2px 4px grey;">
-	<div class="container" id="register" style="padding: 15px 15px 15px 15px !important;max-width: inherit !important;min-width: inherit !important;">
-	<h1>Register Form</h1>
-	<form class="login_form" action="/register" method="post">
-		<div class="form-group" style="margin-bottom:16px; margin-right:15px;">
-		<label for="username">Username</label>
-		<input class="form-control" name="username" id="username" style="width:100%; padding: 5px;"/>
-		</div>
-		<div class="form-group" style="margin-bottom:16px; margin-right:15px;">
-		<label for="password">Password</label>
-		<input class="form-control" name="password" id="password" style="width:100%; padding: 5px;"/>
-		</div>
-		<div class="form-group" style="margin-bottom:16px; margin-right:15px;">
-		<label for="address">Address:</label>
-		<textarea class="form-control" name="address" id="address" rows="3" style="width:100%; padding: 5px;"></textarea>
-		</div>
-		<button class="btn btn-primary" type="submit" style="width:40%;padding:10px 0px; margin-right:20px;color:#fff; border-radius:4px; border: 1px outset #d0d0d0;box-shadow: 2px 2px 4px grey;background-color:#007bff">Register</button>
-		<a href="/register">Register</a>
-	</form>
+{% extends "base.html" %}
+{% block head %}
+	<title>Register</title>
+	<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style_register.css') }}">
+{% endblock %}
+{% block body %}
+<div class="formbox">
+	<div class="container">
+		<h1>Register Form</h1>
+		<form action="/register" method="post">
+			<div class="row">
+			<div class="col-sm">
+			{{ form.csrf_token() }}
+			<div class="form-group">
+				{{ form.fname.label }}
+				{{ form.fname(class="form-control") }}
+			</div>
+			<div class="form-group">
+				{{ form.username.label }}
+				{{ form.username(class="form-control") }}
+			</div>
+			{% if msg.username %}
+				<div class="alert alert-danger alert-dismissable fade show">{{ msg.username }}</div>
+			{% endif %}
+			<div class="form-group">
+				{{ form.password.label }}
+				{{ form.password(class="form-control") }}
+			</div>
+			<div class="form-group">
+				{{ form.cpassword.label }}
+				{{ form.cpassword(class="form-control") }}
+			</div>
+			</div>
+			<div class="col-sm">
+			<div class="form-group">
+				{{ form.lname.label }}
+				{{ form.lname(class="form-control") }}
+			</div>
+			<div class="form-group">
+				{{ form.email.label }}
+				{{ form.email(class="form-control") }}
+			</div>
+			{% if msg.email %}
+				<div class="alert alert-danger alert-dismissable fade show">{{ msg.email }}</div>
+			{% endif %}
+			<div class="form-group">
+				{{ form.address.label }}
+				{{ form.address(class="form-control", rows="2") }}
+			</div>
+			{{ form.submit(class="btn btn-primary submit-btn") }}
+			<div class="link">
+				<p>Existing User? <a href="/login">Login here</a></p>
+			</div>
+			</div>
+			</div>
+		</form>
 	</div>
-	</div>
-</body>
-</html>
-
+</div>
+{% endblock %}

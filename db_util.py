@@ -14,7 +14,7 @@ def insert_login_db(query):
 	cursor.execute(query)
 	conn.commit()
 	if cursor.rowcount:
-		print("hi")
+		print(cursor.rowcount)
 	conn.close()
 	
 def select_login_db(query):

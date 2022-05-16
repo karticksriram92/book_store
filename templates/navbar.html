@@ -1,20 +1,20 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-	<a class="navbar-brand" href="#">
+	<a class="navbar-brand" href="/home">
 	<img class="d-inline-block align-top" src="{{ url_for('static', filename='head.png') }}" width="30" height="30">BookStore</a>
 	<button class="navbar-toggler" data-toggle="collapse" type="button" data-target="#navbarSupportedContent"><span class="navbar-toggler-icon"></span></button>
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mr-auto">
-			<li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+			<li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Categories</a>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" href="#">1st item</a>
-					<a class="dropdown-item" href="#">2nd item</a>
+					<a class="dropdown-item" href="#">Fiction</a>
+					<a class="dropdown-item" href="#">Non-Fiction</a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">last item</a>
+					<a class="dropdown-item" href="#">Programming</a>
 				</div>
 			</li>
-			<li class="nav-item"><a class="nav-link" href="#">Cart</a></li>
+			<li class="nav-item"><a class="nav-link" href="/cart">Cart</a></li>
 		</ul>
 	<form class="form-inline my-2 my-lg-0" style="flex-flow: nowrap;">
 		<input class="form-control mr-sm-2" type="search" placeholder="Search">

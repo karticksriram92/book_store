@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Success</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_footer.css') }}">
+{% endblock %}
+{% block body %}
+{% include "navbar.html" %}
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-6 my-4 text-center text-primary">
+		<h1>Thank You for paying.</h1>
+		</div>
+	</div>
+</div>
+{% include "footer.html" %}
+{% endblock %}

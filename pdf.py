@@ -7,4 +7,4 @@ pdf_page = Blueprint('pdf_page', __name__, template_folder="templates")
 def showPdf():
 	workdir = os.path.abspath(os.getcwd())
 	fpath = workdir + '/static/pdf/'
-	return send_from_directory(fpath, 'test.pdf')
+	return send_from_directory(fpath, 'learn_python.pdf')

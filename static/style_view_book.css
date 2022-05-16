@@ -1,0 +1,182 @@
+.container {
+	margin: 40px auto;
+}
+
+.book-heading {
+	overflow: hidden;
+	max-height: 35%
+}
+
+.book-info {
+	line-height: 1.5;
+	max-height: 50%
+}
+
+.book-info > p, p {
+	margin-bottom: 0px;
+}
+
+.buttons {
+	max-height: 20%
+}
+
+.cart-button {
+	font-size: 20px;
+}
+
+.buy-button {
+	font-size: 20px;
+}
+
+.book-details {
+	padding-top: 20px;
+}
+
+/* book-panel */
+.book-mode {
+	border-bottom: none !important;
+	background-color: #9FB9CB;
+}
+
+.book-panel {
+	width: 80px;
+	padding: 10px 0px;
+}
+
+.book-panel > a {
+	text-decoration: none;
+}
+
+/* rating-button */
+.rating-text {
+	margin-bottom: 10px;
+	margin-top: 5px;
+}
+
+.rating-button {
+	vertical-align: top;
+	font-size: .75rem;
+	font-weight: 900;
+	display: inline-block;
+	padding: 0px 10px;
+	background-color: red;
+	color: white;
+	border: solid red 2px;
+	border-radius: 2px;
+}
+
+/* rating */
+.book-rating {
+	text-align: center;
+}
+
+.rating-box {
+	width:80%;
+	margin: auto;
+	overflow: hidden;
+	border-radius: 20px;
+	box-shadow: 0 0 2px #b3acac;
+}
+
+.rating {
+	text-align: center;
+	padding: 5px;
+	padding-top: 8px;
+}
+
+.rating__star {
+	font-size: 1.3em;
+	cursor: pointer;
+	color: #dabd18b2;
+	transition: filter linear .3s;
+}
+
+.rating__star:hover {
+	filter: drop-shadow(1px 1px 4px gold);
+}
+
+.rating-result {
+	font-size: 1.3em;
+}
+
+/* rating-bars */
+.rating-bars {
+	margin-top: 15px;
+}
+
+.rating-bar-each {
+	width: 90%;
+	margin: auto;
+}
+
+.rating-label {
+	width: 10%;
+}
+.progress-box {
+	width: 90%;
+}
+
+.progress {
+	margin-top: 4px;
+}
+
+/* comment */
+.comment-box {
+	border: solid #00000026 1px;
+	padding: 15px 15px;
+}
+
+.comment > div > p {
+	margin-bottom: 0px;
+	line-height: 1;
+}
+
+.comment-section-inner {
+	padding: 15px 15px;
+}
+
+.comment-section-inner > div:nth-child(even) {
+	background-color: #dbdbd9;
+}
+
+.comment {
+	padding: 10px 0px;
+}
+
+/* Comment Form */
+.comment-container {
+	padding: 15px;
+}
+
+.comment-form {
+	position: fixed;
+	width: 50vw;
+	height: 70vh;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	border: solid grey 1px;
+	border-radius: 4px;
+	border-shadow: 2px 2px 2px black;
+}
+
+.close-btn {
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	color: black;
+	font-size: 30px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.comment-overlay {
+	z-index: -1;
+	opacity: 0;
+}
+
+.activeForm .comment-overlay {
+	z-index: 2;
+	opacity: 1;
+}

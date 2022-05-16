@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request, render_template, redirect, url_for, s
 from login_form import Loginform
 from register_form import Registerform
 import sqlite3
-#k
 
 login_page=Blueprint("login_page", __name__, template_folder="templates")
 

@@ -8,7 +8,7 @@ insert_query="insert into login(name, password) values('karticksriram','sriram20
 delete_query="delete from user where username=?"
 delete_username=("karticksriram",)
 
-def insert_login_db(query):
+def insert_login(query):
 	conn = sqlite3.connect("./database/bookstore.db")
 	cursor = conn.cursor()
 	cursor.execute(query)
@@ -17,7 +17,7 @@ def insert_login_db(query):
 		print(cursor.rowcount)
 	conn.close()
 	
-def select_login_db(query):
+def select_login(query):
 	conn = sqlite3.connect("./database/bookstore.db")
 	cursor = conn.cursor()
 	cursor.execute(query)
@@ -28,7 +28,7 @@ def select_login_db(query):
 	
 data=('karticksriram','sriram20')
 
-def select_count_login_db(query,ldata):
+def select_count_login(query,ldata):
 	conn = sqlite3.connect("./database/bookstore.db")
 	cursor = conn.cursor()
 	cursor.execute(query,ldata)
@@ -54,8 +54,8 @@ def delete_table(query,username):
 	conn.close()
 
 
-select_login_db(select_query)
+#select_login_db(select_query)
 #delete_table(delete_query, delete_username)
-select_login_db(select_query)
+#select_login_db(select_query)
 #create_table(create_query)
 #insert_login_db(insert_query)

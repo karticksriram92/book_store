@@ -7,6 +7,7 @@ from home import home_page
 from pdf import pdf_page
 from search import search_page
 from success import success_page
+from admin import add_book_page
 
 app = Flask(__name__, template_folder="templates")
 
@@ -22,6 +23,7 @@ app.register_blueprint(home_page)
 app.register_blueprint(pdf_page)
 app.register_blueprint(search_page)
 app.register_blueprint(success_page)
+app.register_blueprint(add_book_page)
 
 @app.route("/")
 def index():

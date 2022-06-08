@@ -1,1 +1,6 @@
-
+.cbooks .carousel-control-next,
+.cbooks .carousel-control-prev {
+	width: 8%;
+	background-color: black;
+    filter: invert(100%);
+}

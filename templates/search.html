@@ -12,21 +12,24 @@
 				<h3>Search results for <strong>Python</strong></h3>
 			</div>
 		</div>
-		{% for i in range(0,4) %}
+		{% for inner_list in books_data %}
 		<div class="row">
-			{% for i in range(0,4) %}
+			{% for i in range(inner_list | length) %}
 			<div class="col-sm">
 				<div class="book_container">
 				<div class="book_block">
 					<div class="book_img">
+<!--
 						<img class="image" height="300" src="{{ url_for('static', filename='scipy.png') }}" />
+-->
+						<img class="image" height="300" src="data:image/jpeg;base64,{{ inner_list[i]['b_img_small'] }}" />
 					</div>
 					<div class="book_desc">
 						<div class="name">
-							<h4>Learning scipy and also Scientific Computing.</h4>
+							<h4>{{ inner_list[i]['b_name'] }}</h4>
 						</div>
 					<p class="rating-text"><span class="rating">4.5</span> (4,888)</p>
-					<div class="desc"><p>A practical guide to learn scipy and numerical data processing with numpy using python. recommended by the python official site.</p>
+					<div class="desc"><p>{{ inner_list[i]['b_desc'] }}</p>
 					</div>
 					</div>
 				</div>

@@ -3,8 +3,16 @@ from adm_book_reg_form import AddBook_Form
 import sqlite3, random, uuid
 from PIL import Image
 import app
+import io
+import os
 
+
+view_book_page = Blueprint("view_book_page", __name__, template_folder="templates")
 add_book_page = Blueprint("add_book_page", __name__, template_folder="templates")
+
+@view_book_page.route('/admin/view_book', methods=['POST','GET'])
+def view_book():
+	return render_template('adm_view_book.html')
 
 @add_book_page.route('/admin/add_book', methods=['POST', 'GET'])
 def add_book():
@@ -19,23 +27,32 @@ def add_book():
 			full_img = resize_img(form.img.data)
 			small_img = resize_img(form.img.data, small=True)
 			pdf_path= get_pdf_path(form.pdf.data)
-			book_tuple=(book_id, form.name.data, form.author.data, form.publisher.data, form.price.data, form.description.data, form.isbn.data, full_img, small_img, pdf_path, form.stock.data)
+			book_tuple=(book_id, form.name.data, form.author.data, form.publisher.data, form.price.data, form.description.data, form.isbn.data, form.book_type.data, full_img, small_img, pdf_path, form.stock.data)
 			print("prepped")
 			if do_add_book(book_tuple):
-				return "book added successfully."
-	return render_template('add_book.html', form=form)
+				form=AddBook_Form(formdata=None)
+				return render_template('adm_add_book.html', form=form)
+	else:
+		print("not working")
+		pass
+	return render_template('adm_add_book.html', form=form, msg=msg)
 
 def resize_img(img, small=False):
 	sizes = (150,250) if small else (250,350)
+	#trying open method with bytesIO
+	img = Image.open(img.stream)
+	
 	new_img = img.resize(sizes)
 	qval = 80
-	return new_img
+	img_bytes_arr= io.BytesIO()
+	new_img.save(img_bytes_arr, format="JPEG")
+	return img_bytes_arr.getvalue()
 	
 def get_id():
 	conn = sqlite3.connect("./database/bookstore.db")
 	cursor = conn.cursor()
 	while True:
-		rand_id = random.randrange(000000, 999999)
+		rand_id = random.randrange(100000, 999999)
 		cursor.execute("select count(*) from book where b_id=?",(rand_id,))
 		if not (cursor.fetchone()[0]):
 			conn.close()
@@ -61,7 +78,7 @@ def get_pdf_path(pdf_data):
 def do_add_book(book_data):
 	conn = sqlite3.connect("./database/bookstore.db")
 	cursor = conn.cursor()
-	cursor.execute("insert into book(b_id, b_name, b_author, b_publisher, b_price, b_desc, b_isbn, b_img, b_img_small, b_pdf, b_stock) values(?,?,?,?,?,?,?,?,?,?,?)", book_data)
+	cursor.execute("insert into book(b_id, b_name, b_author, b_publisher, b_price, b_desc, b_isbn, b_type, b_img, b_img_small, b_pdf, b_stock) values(?,?,?,?,?,?,?,?,?,?,?,?)", book_data)
 	conn.commit()
 	if(cursor.rowcount):
 		conn.close()

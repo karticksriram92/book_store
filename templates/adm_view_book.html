@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>View Books</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='adm_view_book.css') }}">
+{% endblock %}
+{% block body %}
+{% include "adm_navbar.html" %}
+<div class="container-fluid">
+	<div class="row book-page flex-nowrap">
+	<div class="flex-xl-column">
+	<div class="row book-list-titles">
+		<div class="col-2">
+			<h5>Book Cover</h5>
+		</div>
+		<div class="col-2">
+			<h5>Book Name</h5>
+		</div>
+		<div class="col-2">
+			<h5>Book Author</h5>
+		</div>
+		<div class="col-2">
+			<h5>Book Publisher</h5>
+		</div>
+		<div class="col-2">
+			<h5>Book ISBN</h5>
+		</div>
+		<div class="col-2">
+			<h5>Book Price</h5>
+		</div>
+		<div class="col-2">
+			<h5>Book Stock</h5>
+		</div>
+		<div class="col-4">
+			<h5>Book Description</h5>
+		</div>
+	</div>
+	{% for i in range(0,4) %}
+	<div class="row book-list">
+		<div class="col-2">
+			<img class="book-image" src="{{ url_for('static', filename='malala_small.png') }}">
+		</div>
+		<div class="col-2">
+			<p>I am Malala</p>
+		</div>
+		<div class="col-2">
+			<p>Someone</p>
+		</div>
+		<div class="col-2">
+			<p>Someone else</p>
+		</div>
+		<div class="col-2">
+			<p>1234567890123</p>
+		</div>
+		<div class="col-2">
+			<p>100</p>
+		</div>
+		<div class="col-2">
+			<p>10</p>
+		</div>
+		<div class="col-4">
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+		</div>
+	</div>
+	{% endfor %}
+	</div>
+	</div>
+</div>
+{% endblock %}

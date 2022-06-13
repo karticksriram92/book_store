@@ -16,6 +16,20 @@
 				{{ form.fname(class="form-control") }}
 			</div>
 			<div class="form-group">
+				{{ form.lname.label }}
+				{{ form.lname(class="form-control") }}
+			</div>
+			<div class="form-group">
+				{{ form.email.label }}
+				{{ form.email(class="form-control") }}
+			</div>
+			{% if msg.email %}
+				<div class="alert alert-danger alert-dismissable fade show">{{ msg.email }}</div>
+			{% endif %}
+			
+			</div>
+			<div class="col-sm">
+			<div class="form-group">
 				{{ form.username.label }}
 				{{ form.username(class="form-control") }}
 			</div>
@@ -31,24 +45,11 @@
 				{{ form.cpassword(class="form-control") }}
 			</div>
 			</div>
-			<div class="col-sm">
-			<div class="form-group">
-				{{ form.lname.label }}
-				{{ form.lname(class="form-control") }}
 			</div>
-			<div class="form-group">
-				{{ form.email.label }}
-				{{ form.email(class="form-control") }}
-			</div>
-			{% if msg.email %}
-				<div class="alert alert-danger alert-dismissable fade show">{{ msg.email }}</div>
-			{% endif %}
-			<div class="form-group">
-				{{ form.address.label }}
-				{{ form.address(class="form-control", rows="2") }}
-			</div>
+			<div class="row justify-content-center">
+				<div class="col-6">
 			{{ form.submit(class="btn btn-primary submit-btn") }}
-			<div class="link">
+			<div class="link text-center">
 				<p>Existing User? <a href="/login">Login here</a></p>
 			</div>
 			</div>

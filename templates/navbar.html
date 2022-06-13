@@ -8,10 +8,11 @@
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Categories</a>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" href="#">Fiction</a>
-					<a class="dropdown-item" href="#">Non-Fiction</a>
+					<a class="dropdown-item" href="/books_category/fiction">Fiction</a>
+					<a class="dropdown-item" href="/books_category/non-fiction">Non-Fiction</a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">Programming</a>
+					<a class="dropdown-item" href="/books_category/science">Science</a>
+					<a class="dropdown-item" href="/books_category/biography">Biography</a>
 				</div>
 			</li>
 			<li class="nav-item"><a class="nav-link" href="/cart">Cart</a></li>
@@ -20,5 +21,18 @@
 		<input class="form-control mr-sm-2" type="search" name="search" placeholder="Search">
 		<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 	</form>
+	{% if session['uid'] %}
+	<div class="dropdown pl-3">
+		<a href="#" id="dropdownMenu" data-toggle="dropdown">
+			<img src="{{ url_for('static', filename='account_icon_alpha.png') }}" width="40" height="40" >
+		</a>
+		<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu">
+			<a class="dropdown-item">Account</a>
+			<a class="dropdown-item">Your library</a>
+			<div class="dropdown-divider"></div>
+			<a class="dropdown-item" href="/logout">Logout</a>
+		</div>
+	</div>
+	{% endif %}
 	</div>
 </nav>

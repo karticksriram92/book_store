@@ -1,10 +1,13 @@
 .formbox {
-	margin: 40px auto; 
+	position: absolute;
 	width:50%;
 	border-top: 1px solid #D0D0D0;
 	border-left: 1px solid #D0D0D0;
 	border-radius: 4px; 
 	box-shadow: 2px 2px 4px grey;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
 h1 {
@@ -45,8 +48,10 @@ p {
 }
 
 .submit-btn {
+/*
 	float:right;
-	width:70%;
+*/
+	width:100%;
 	padding:6px 0px; 
 	margin-top:10px;
 	color:#fff; 
@@ -57,6 +62,5 @@ p {
 }
 
 .link {
-	float:right;
 	padding-top:8px;
 }

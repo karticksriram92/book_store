@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block head %}
 	<title>Login</title>
-	<link type='text/css' rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
+	<link type='text/css' rel='stylesheet' href="{{ url_for('static', filename='style_login.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -9,7 +9,9 @@
 		<div class="container">
 			<h1>Login Form</h1>
 			<form action="/login" method="post">
-				{{ form.csrf_token() }}
+				<div class="row">
+					<div class="col-sm">
+				{{ form.csrf_token }}
 				<div class="form-group">
 					{{ form.username.label }}
 					{{ form.username(class="form-control") }}
@@ -23,8 +25,10 @@
 					{{ msg }}
 				</div>
 				{% endif %}
-				{{ form.submit(class="btn btn-primary") }}
-				<a href="/register">Register</a>
+				{{ form.submit(class="btn btn-primary submit-btn mx-3") }}
+				<div class="link"><p>New user? <a href="/register">Register here</a></p></div>
+				</div>
+				</div>
 			</form>
 		</div>
 	</div>

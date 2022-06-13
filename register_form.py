@@ -9,5 +9,5 @@ class Registerform(FlaskForm):
 	fname=StringField(label=("First Name"), validators=[DataRequired()])
 	lname=StringField(label=("Last Name"), validators=[DataRequired()])
 	email=StringField(label=("Email"), validators=[DataRequired(), Email()])
-	address=TextAreaField(label=("Address"), validators=[DataRequired(), Length(min=20, max=100)])
+	# ~ address=TextAreaField(label=("Address"), validators=[DataRequired(), Length(min=20, max=100)])
 	submit=SubmitField(label=("Register"))

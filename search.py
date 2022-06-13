@@ -13,8 +13,8 @@ def doSearch():
 		search_results = get_search_results(search_query)
 		if search_results:
 			books_data = get_books(search_results,4)
-			return render_template("search.html",books_data=books_data)
-	return render_template("search.html")
+			return render_template("search.html",search_query=search_query, books_data=books_data)
+	return redirect('/home')
 
 def regtest(value, pattern):
 	pattern_str=pattern
@@ -24,15 +24,14 @@ def regtest(value, pattern):
 	return compiled_pattern.search(value.lower()) is not None
 
 def get_search_results(squery):
-	conn = sqlite3.connect("./database/bookstore.db")
+	conn = sqlite3.connect("./database/book_store.db")
 	conn.create_function("regtest", 2, regtest)
 	cursor = conn.cursor()
-	cursor.execute("select b_id from book where regtest(b_desc, ?)",(squery,))
+	cursor.execute("select b_id from book where regtest(b_name, ?)",(squery,))
 	rows = cursor.fetchall()
 	results = []
 	for row in rows:
 		results.append(row[0])
-	print(results)
 	conn.close()
 	return results
 	
@@ -43,15 +42,11 @@ def dict_factory(cursor, row):
 	return d
 
 def get_books(b_id_list, part):
-	conn = sqlite3.connect("./database/bookstore.db")
+	conn = sqlite3.connect("./database/book_store.db")
 	conn.row_factory = dict_factory
 	cursor = conn.cursor()
 	sql_query="select * from book where b_id in ({0})".format(', '.join('?'*len(b_id_list)))
 	cursor.execute(sql_query, b_id_list)
 	rows = cursor.fetchall()
-	for row in rows:
-		row['b_img']=base64.b64encode(row['b_img'])
-		row['b_img_small']=base64.b64encode(row['b_img_small'])
 	parted_rows=[rows[i:i+part] for i in range(0, len(rows), part)]
-	#print(parted_rows)
 	return parted_rows

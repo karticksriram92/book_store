@@ -8,16 +8,17 @@
 }
 
 .book-info {
-	line-height: 1.5;
+	line-height: 1.5em;
 	max-height: 50%
 }
 
 .book-info > p, p {
-	margin-bottom: 0px;
+	margin-bottom: 10px;
 }
 
 .buttons {
-	max-height: 20%
+	margin-top: 40px;
+	max-height: 20%;
 }
 
 .cart-button {
@@ -30,10 +31,11 @@
 
 .book-details {
 	padding-top: 20px;
+	text-align: justify;
 }
 
 /* book-panel */
-.book-mode {
+.book-mode-paperback, .book-mode-ebook {
 	border-bottom: none !important;
 	background-color: #9FB9CB;
 }
@@ -71,49 +73,63 @@
 }
 
 .rating-box {
-	width:80%;
 	margin: auto;
-	overflow: hidden;
-	border-radius: 20px;
-	box-shadow: 0 0 2px #b3acac;
 }
 
 .rating {
 	text-align: center;
-	padding: 5px;
 	padding-top: 8px;
 }
 
-.rating__star {
+.rating_star, .rated_star, .rated-stars-review{
 	font-size: 1.3em;
 	cursor: pointer;
 	color: #dabd18b2;
 	transition: filter linear .3s;
 }
 
-.rating__star:hover {
+.rated_star, .rated-stars-review {
+	cursor: default;
+}
+
+.rated-stars-review {
+	font-size: .8em;
+}
+
+.rating_star:hover {
 	filter: drop-shadow(1px 1px 4px gold);
 }
 
-.rating-result {
-	font-size: 1.3em;
+.rating-original {
+	font-size: 4em;
+	line-height: 1em;
+	margin-top: -15px;
+	padding-bottom: 15px;
 }
 
 /* rating-bars */
-.rating-bars {
-	margin-top: 15px;
+.rating-show {
+	padding-left: 30px;
+	padding-right: 0px;
 }
 
 .rating-bar-each {
-	width: 90%;
+	width: 100%;
 	margin: auto;
 }
 
-.rating-label {
+.rating-star-number {
 	width: 10%;
 }
+
 .progress-box {
-	width: 90%;
+	width: 80%;
+}
+
+.rating-per-star {
+	font-size: .9em;
+	text-align: right;
+	width: 10%;
 }
 
 .progress {
@@ -151,7 +167,6 @@
 .comment-form {
 	position: fixed;
 	width: 50vw;
-	height: 70vh;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);

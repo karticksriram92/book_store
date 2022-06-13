@@ -1,17 +1,18 @@
 from flask import Flask, jsonify, request, render_template, redirect, url_for, session
 from flask_restful import Resource, Api
-import sqlite3, uuid
-import stripe
+import sqlite3, uuid, stripe
 from login import login_page, register_page
 from home import home_page
 from pdf import pdf_page
 from search import search_page
 from success import success_page
-from admin import add_book_page, view_book_page
+from view_book import view_book_page
+from admin import adm_add_book_page, adm_view_book_page
+from categorised_books import categorised_books_page
 
 app = Flask(__name__, template_folder="templates")
 
-app.config["SECRET_KEY"] = "hello"
+app.config["SECRET_KEY"] = "test"
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 app.config["STRIPE_PUBLIC_KEY"]="pk_test_51KzcRkSE3GG6tmtIKjMMMEQ5u1RrO6bc72VNQSsjktsWXyw4aXAt6Za8kEFEQIOJ9pXO1PYWkdbX5PPQFUYCozYW00wRXjLLz9"
@@ -23,14 +24,16 @@ app.register_blueprint(home_page)
 app.register_blueprint(pdf_page)
 app.register_blueprint(search_page)
 app.register_blueprint(success_page)
-app.register_blueprint(add_book_page)
 app.register_blueprint(view_book_page)
+app.register_blueprint(adm_add_book_page)
+app.register_blueprint(adm_view_book_page)
+app.register_blueprint(categorised_books_page)
 
 @app.route("/")
 def index():
-	if not session.get("uid"):
-		return redirect("/login")
-	return render_template("index.html")
+	if session.get("uid"):
+		return render_template("home.html")
+	return redirect("/login")
 
 @app.route("/logout")
 def logout():

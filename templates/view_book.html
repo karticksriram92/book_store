@@ -9,139 +9,201 @@
 {% block body %}
 {% include "navbar.html" %}
 <div class="container">
-	<div class="row justify-content-center">
-		<div class="col-3 book-image">
-			<img src="{{ url_for('static', filename='scipy.png') }}" >
-		</div>
-		<div class="col-7">
-			<div class="book-heading">
-				<h2>Learning SciPy for Numerical and Scientific Computing</h2>
-			</div>
-			<div class="book-info">
-				<p>Author: Francisco</p>
-				<p>Publisher: opensource</p>
-				<p>ISBN: 375987458374583748</p>
-			</div>
-			<div class="row justify-content-start">
-				<div class="col-2">
-					<div class="book-panel text-center">
-						<a href="#">
-						<div class="book-mode border border-primary">Paperback</div>
-						<div class="book-price border border-primary">&#8377;300</div>
-						</a>
-					</div>
-				</div>
-				<div class="col-2">
-					<div class="book-panel text-center">
-						<a href="#">
-						<div class="book-mode border border-primary">Ebook</div>
-						<div class="book-price border border-primary">&#8377;150</div>
-						</a>
-					</div>
-				</div>
-			</div>
-			<p class="stock">In Stock: Available</p>
-			<p class="rating-text"><span class="rating-button">4.5</span> (4,888)</p>
-			<div class="row justify-content-start buttons">
-				<div class="col-4">
-					<button class="btn btn-primary w-100 py-2 cart-button">Add to Cart</button>
-				</div>
-				<div class="col-4">
-					<button class="btn btn-primary w-100 py-2 buy-button">Buy Book</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="row justify-content-center book-details">
-		<div class="col-3 book-rating">
-			<h5>Rate the Book</h5>
-			<div class="rating-box">
-			<div class="rating">
-				<span class="rating-result"></span>
-				<i class="rating__star far fa-star"></i>
-				<i class="rating__star far fa-star"></i>
-				<i class="rating__star far fa-star"></i>
-				<i class="rating__star far fa-star"></i>
-				<i class="rating__star far fa-star"></i>
-			</div>
-			</div>
-			<div class="rating-bars">
-				{% for i in range(5, 0, -1) %}
-				<div class="row rating-bar-each">
-				<div class="rating-label">{{i}}</div>
-				<div class="progress-box">
-				<div class="progress">
-					<div class="progress-bar bg-warning" role="progressbar" style="width: {{ bratings[i-1] }}%"></div>
-				</div>
-				</div>
-				</div>
-				{% endfor %}
-			</div>
-		</div>
-		<div class="col-7">
-			<h3>Description:</h3>
-			<p>SciPy has been an integral part of the computational environment of choice of
-many scientists for years. One of the challenges of our trade is to bring to a single
-workstation the production of professionals with different visions, techniques, tools,
-and software (from the pure mathematician, to the hardcore engineer).
-We are required to produce scripts in which, for example, there are combinations
-of experiments written and performed in SciPy itself, C/C++, Fortran, R, or
-MATLAB®. We often receive extremely large amounts of raw data from some signal
-acquisition device. From all this heterogeneous material, we employ SciPy to retrieve
-this data, manipulate it, experiment it, analyze it, and once finished with the analysis,
-produce high-quality documentation with professional-looking diagrams and
-visualizations aids.
-SciPy is the perfect way to coordinate everything in a smooth, reliable, and coherent
-way. It allows performing all these tasks with ease. This is partly because many
-dedicated software tools easily extend the core features of SciPy, and interfacing
-with non-Python-based packages and software is extremely easy.
-In summary this book presents the most robust programming environment to date.
-We will show you how to use this system from basic training of manipulation of
-data, to a very detailed exposition through examples of state-of-the-art research in
-different branches of science and engineering.</p>
-		</div>
-	</div>
-	<div class="row justify-content-center">
-		<div class="col-10 comment-box">
-				<h2>Comments</h2>
-				<div class="comment-section-inner">
-				{% for i in range(0,5) %}
-					<div class="row justify-content-center comment">
-						<div class="col-3 align-middle comment-info">
-							<p>15 May 2022</p>
-							<p>By Fred Jerry</p>
-						</div>
-						<div class="col-9 align-middle comment-data">
-							<p>This book is good content about python libraries and learning numerical and mathematical concepts in python.</p>
-						</div>
-					</div>
-				{% endfor %}
-				</div>
-			<button class="btn btn-primary comment-button" onClick="toggleForm()">Post a Comment</button>
-		</div>
-	</div>
+  <div class="row justify-content-center">
+    <div class="col-3 book-image">
+      <img src="{{ url_for('static', filename=book_data['b_img']) }}" >
+    </div>
+    <div class="col-7">
+      <div class="book-heading">
+        <h2>{{ book_data['b_name'] }}</h2>
+      </div>
+      <div class="book-info">
+        <p>Author: {{ book_data['b_author'] }}</p>
+        <p>Publisher: {{ book_data['b_publisher'] }}</p>
+        <p>ISBN: {{ book_data['b_isbn'] }}</p>
+      </div>
+      <div class="row justify-content-start">
+        <div class="col-2">
+          <div class="book-panel text-center">
+            <a href="#">
+              <div class="book-mode-paperback border border-primary">Paperback</div>
+              <div class="book-price-paperback border border-primary">&#8377;{{ book_data['b_paperbook_price'] }}</div>
+            </a>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="book-panel text-center">
+            <a href="#">
+              <div class="book-mode-ebook border border-primary">Ebook</div>
+              <div class="book-price-ebook border border-primary">&#8377;{{ book_data['b_ebook_price'] }}</div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <p class="stock">In Stock: {{ book_data['b_stock'] }}</p>
+<!--
+      <p class="rating-text"><span class="rating-button">4.5</span> (4,888)</p>
+-->
+      <div class="row justify-content-start buttons">
+        <div class="col-4">
+          <button class="btn btn-primary w-100 py-2 cart-button">Add to Cart</button>
+        </div>
+        <div class="col-4">
+          <button class="btn btn-primary w-100 py-2 buy-button">Buy Book</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center book-details">
+    <div class="col-10">
+      <h3>Description:</h3>
+      <p>{{ book_data['b_desc'] }}</p>
+    </div>
+  </div>
+  <div class="row justify-content-center mt-5">
+    <div class="col-10 comment-box">
+      <div class="row">
+        <div class="col-12">
+          <h3>Review Summary</h3>
+          <div class="row mt-3">
+            <div class="col-7 book-rating">
+              <div class="row justify-content-start">
+                <div class="col-7 rating-show">
+                  <div class="rating-bars">
+                    {% for i in range(5, 0, -1) %}
+                    <div class="row rating-bar-each">
+                      <div class="rating-star-number"><strong>{{ i }}</strong><i class="star-indicator fa fa-star"></i></div>
+                      <div class="progress-box">
+                        <div class="progress">
+                          <div class="progress-bar bg-warning" role="progressbar" style="width: {{ ratings_bar[i] }}%"></div>
+                        </div>
+                      </div>
+                      <div class="rating-per-star">{{ ratings_bar[i] }}%</div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="col-5">
+                  <div class="rating-box">
+                    <div class="rating">
+                      <div class="rating-original">{{ ratings['org'] }}</div>
+                      <div class="rated-stars-show">
+                        {% for i in range(0, ratings['full'] | int) %}
+                        <i class="rated_star fas fa-star"></i>
+                        {% endfor %}
+                        {% if ratings['half'] %}
+                        <i class="rated_star fas fa-star-half"></i>
+                        {% endif %}
+                        {% if (ratings['half']) %}
+                        {% for i in range((ratings['full'] | int) + 1, 5) %}
+                        <i class="rated_star far fa-star"></i>
+                        {% endfor %}
+                        {% else %}
+                        {% for i in range((ratings['full'] | int), 5) %}
+                        <i class="rated_star far fa-star"></i>
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+                      <div class="rating-count">{{ ratings['count'] }} reviews</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-5">
+              <div class="row justify-content-end">
+                <div class="col-6">
+                  <button type="button" class="btn btn-primary" onClick="toggleForm()"><i class="fa fa-pencil"></i> Write a Review</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr/>
+      <div class="row">
+        <div class="col-12">
+<!--
+          <h2>Reviews</h2>
+-->
+          <div class="comment-section-inner">
+			{% if reviews_data %}
+				{% for review_dict in reviews_data%}
+            <div class="row justify-content-center comment">
+              <div class="col-3 align-middle comment-info">
+                <p>{{ review_dict['date'] }}</p>
+                <p>By <strong>{{ review_dict['name'] }}</strong></p>
+              </div>
+              <div class="col-9 align-middle comment-data">
+                <p><span class="rated-stars-review">
+                        {% for i in range(0, review_dict['stars'] | int) %}
+                        <i class="rated-stars fas fa-star"></i>
+                        {% endfor %}
+                        {% for i in range(review_dict['stars'] | int, 5) %}
+                        <i class="rated-stars far fa-star"></i>
+                        {% endfor %}
+                   </span>{{ review_dict['review'] }}</p>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+				<div class="text-center mt-5"><i class="fa-solid fa-face-frown fa-4x"></i></div>
+				<div class="d-none"></div>
+				<div class="text-center mt-3">There are no reviews yet. Be the first one to give us a review.</div>
+          {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- Comment Form -->
 <div class="comment-overlay comment-form">
-	<div class="comment-container">
-		<h2>Post a Comment</h2>
-		<div class="close-btn" onclick="toggleForm()">&times;</div>
-		<form action="" method="post">
-			<div class="form-group">
-				{{ form.name.label }}
-				{{ form.name(class="form-control") }}
-			</div>
-			<div class="form-group">
-				{{ form.email.label }}
-				{{ form.email(class="form-control") }}
-			</div>
-			<div class="form-group">
-				{{ form.comment.label }}
-				{{ form.comment(class="form-control") }}
-			</div>
-			{{ form.submit(class="btn btn-primary submit-btn") }}
-		</form>
-	</div>
+  <div class="comment-container">
+    <h2>Post a Comment</h2>
+    <div class="close-btn" onclick="toggleForm()">&times;</div>
+    <form id="review-form" action="/books/{{ book_data['b_id'] }}" method="post">
+      {{ form.csrf_token }}
+      {% if 'uid' not in session %}
+      <div class="form-group">
+        {{ form.name.label }}
+        {{ form.name(class="form-control") }}
+      </div>
+      <div class="form-group">
+        {{ form.email.label }}
+        {{ form.email(class="form-control") }}
+      </div>
+      {% else %}
+      <div class="form-group">
+        {{ form.name.label(style="display:none;") }}
+        {{ form.name(class="form-control", value="testname", style="display:none;") }}
+      </div>
+      <div class="form-group">
+        {{ form.email.label(style="display:none;") }}
+        {{ form.email(class="form-control", value="testname@gmail.com", style="display:none;") }}
+      </div>
+      {% endif %}
+      <div class="form-group">
+        {{ form.comment.label }}
+        {{ form.comment(class="form-control") }}
+      </div>
+		{{ form.rstar(id="rstar", value="0.0") }}
+      <div class="book-rating">
+        <div class="rating-box">
+          <div class="rating">
+            <span class="rating-result">0/5</span>
+            <i class="rating_star far fa-star"></i>
+            <i class="rating_star far fa-star"></i>
+            <i class="rating_star far fa-star"></i>
+            <i class="rating_star far fa-star"></i>
+            <i class="rating_star far fa-star"></i>
+          </div>
+        </div>
+      </div>
+      {{ form.submit_review(class="btn btn-primary submit-btn w-100 mt-3 comment-submit") }}
+    </form>
+  </div>
+</div>
 </div>
 {% include "footer.html" %}
 {% endblock %}

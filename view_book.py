@@ -8,6 +8,8 @@ view_book_page = Blueprint('view_book_page', __name__, template_folder='template
 @view_book_page.route('/books/<b_id>', methods=['POST', 'GET'])
 def view_book(b_id):
 	form = Commentform()
+	check_status=False
+	success=False
 	if form.validate_on_submit():
 		date_now = datetime.now().date()
 		print("validating")
@@ -21,6 +23,7 @@ def view_book(b_id):
 		if check_status:
 			if add_review(review_data):
 				form=Commentform(formdata=None)
+				success=True
 		else:
 			print("same username or email.")
 			pass
@@ -28,9 +31,12 @@ def view_book(b_id):
 	reviews = get_review(b_id)
 	reviews_data, star_rating_dict = process_review(reviews)
 	avg_r, tcount=get_avg_rating(star_rating_dict)
+	#for updating book avg rating and total ratings
+	if not check_status:
+		update_ratings(avg_r, tcount, b_id)
 	ratings_bar = make_ratings(star_rating_dict, tcount)
 	ratings=struct_ratings(avg_r, tcount)
-	return render_template('view_book.html', book_data=book_data, ratings_bar=ratings_bar, form=form, ratings=ratings, reviews_data=reviews_data)
+	return render_template('view_book.html', book_data=book_data, ratings_bar=ratings_bar, form=form, ratings=ratings, reviews_data=reviews_data, success=success)
 	
 def dict_factory(cursor, row):
 	d = {}
@@ -129,3 +135,13 @@ def get_user_data(u_id):
 	rows = cursor.fetchall()
 	conn.close()
 	return rows[0]
+
+def update_ratings(avg_rating, total_count, book_id):
+	conn = sqlite3.connect("./database/bookstore.db")
+	cursor = conn.cursor()
+	cursor.execute("update book set b_avg_rating=?, b_total_rating=? where b_id=?", (avg_rating, total_count, book_id))
+	conn.commit()
+	if(cursor.rowcount):
+		conn.close()
+		return True
+	conn.close()

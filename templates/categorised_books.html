@@ -30,7 +30,7 @@
 						<div class="name">
 							<a href="/books/{{inner_list[i]['b_id']}}"><h4>{{ inner_list[i]['b_name'] }}</h4></a>
 						</div>
-					<p class="rating-text"><span class="rating">4.5</span> (4,888)</p>
+					<p class="rating-text"><span class="rating">{{ inner_list[i]['b_avg_rating'] }}</span> ({{ inner_list[i]['b_total_rating'] }})</p>
 					<div class="desc"><p>{{ inner_list[i]['b_desc'] }}</p>
 					</div>
 					</div>

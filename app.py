@@ -10,7 +10,10 @@ from view_book import view_book_page
 from admin import adm_add_book_page, adm_view_book_page
 from categorised_books import categorised_books_page
 
-app = Flask(__name__, template_folder="templates")
+
+
+# ~ app = Flask(__name__, template_folder="templates")
+app = Flask('app', template_folder="templates")
 
 app.config["SECRET_KEY"] = "test"
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -40,12 +43,16 @@ def logout():
 	session.pop("uid", None)
 	return redirect(url_for("index"))
 
-#payment-stripe
+# ~ #payment-stripe
 stripe.api_key=app.config["STRIPE_SECRET_KEY"]
 
 @app.route("/cart", methods=["POST", "GET"])
 def create_checkout_session():
+	# ~ form.validate_on_submit():
+	
+	#already commented out version. dont uncomment it.
 	# ~ checkout_session = stripe.checkout.Session.create(payment_method_types=['card'],line_items=[{'price_data' : {'currency' : 'inr','unit_amount' : 500,'product_data' : {'name' : 'name of the product',},},'quantity' : 1,},], mode='payment',success_url=my_domain + '/success.html', cancel_url=my_domain + '/cancel.html',)
+
 	checkout_session = stripe.checkout.Session.create(payment_method_types=['card'],line_items=[{
                     "name": "Learn Python",
                     "quantity": 1,

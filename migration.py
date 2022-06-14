@@ -42,24 +42,33 @@ def do_add_book(book_data):
 def get_books_id():
 	conn = sqlite3.connect("./database/bookstore.db")
 	cursor = conn.cursor()
-	# ~ cursor.execute("select b_id, new_b_id from book_mig")
-	cursor.execute("select * from book")
+	cursor.execute("select * from books")
+	# ~ cursor.execute("select * from book")
 	rows = cursor.fetchall()
 	for row in rows:
 		print("processing id: "+str(row[0]))
 		# ~ if do_add_book(migration_prep(get_book(row[0]))):
-		# ~ if change_id(row[1], row[0]):
-		if change_table(row)
+		# ~ if change_id(row):
+		if migrate_book(row):
+		# ~ if change_table(row)
 			print("id processed: "+str(row[0]))
 		else:
 			print("failed: "+str(row[0]))
 
-def change_id(unique_id, b_id):
+def migrate_book(b_data):
 	conn = sqlite3.connect("./database/bookstore.db")
 	cursor = conn.cursor()
-	book_data = (unique_id, b_id)
-	print(book_data)
-	cursor.execute("update book set b_id=? where b_id=? ", book_data)
+	cursor.execute("insert into book(b_id, b_name, b_author, b_publisher, b_paperbook_price, b_ebook_price, b_desc, b_isbn , b_type, b_img, b_img_small, b_pdf, b_stock, b_avg_rating, b_total_rating) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", b_data)
+	conn.commit()
+	if(cursor.rowcount):
+		conn.close()
+		return True
+	conn.close()
+
+def change_id(book_data):
+	conn = sqlite3.connect("./database/bookstore.db")
+	cursor = conn.cursor()
+	cursor.execute("update review set b_id=? where b_id=? ", book_data)
 	conn.commit()
 	if(cursor.rowcount):
 		conn.close()
@@ -75,4 +84,4 @@ def check_id():
 		if not (cursor.fetchone()[0]):
 			return unique_id
 
-get_books_id()
+# ~ get_books_id()

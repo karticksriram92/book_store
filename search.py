@@ -24,7 +24,7 @@ def regtest(value, pattern):
 	return compiled_pattern.search(value.lower()) is not None
 
 def get_search_results(squery):
-	conn = sqlite3.connect("./database/book_store.db")
+	conn = sqlite3.connect("./database/bookstore.db")
 	conn.create_function("regtest", 2, regtest)
 	cursor = conn.cursor()
 	cursor.execute("select b_id from book where regtest(b_name, ?)",(squery,))
@@ -42,7 +42,7 @@ def dict_factory(cursor, row):
 	return d
 
 def get_books(b_id_list, part):
-	conn = sqlite3.connect("./database/book_store.db")
+	conn = sqlite3.connect("./database/bookstore.db")
 	conn.row_factory = dict_factory
 	cursor = conn.cursor()
 	sql_query="select * from book where b_id in ({0})".format(', '.join('?'*len(b_id_list)))

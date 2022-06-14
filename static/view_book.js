@@ -6,6 +6,12 @@ function toggleForm() {
 	//~ document.querySelector('.book-mode-paperback').addEventListener('click', () => { e.
 //~ }
 
+function checkAlert() {
+	if($(".alert-comment").length) {
+	$(".alert-comment").slideUp(3000,0);
+}
+};
+
 function prevent(e) {
 	e.preventDefault()
 }
@@ -63,4 +69,5 @@ document.addEventListener("DOMContentLoaded", () => {
 	review_button = document.querySelector('.comment-submit')
 	//~ toggleBookOption();
 	testValue();
+	setTimeout(checkAlert,5000);
 	});

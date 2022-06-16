@@ -15,7 +15,7 @@ Your review was added
 {% include "navbar.html" %}
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-3 book-image">
+    <div class="col-3 book-image" data-id="{{ book_data['b_id'] }}">
       <img src="{{ url_for('static', filename=book_data['b_img']) }}" >
     </div>
     <div class="col-7">
@@ -23,14 +23,14 @@ Your review was added
         <h2>{{ book_data['b_name'] }}</h2>
       </div>
       <div class="book-info">
-        <p>Author: {{ book_data['b_author'] }}</p>
-        <p>Publisher: {{ book_data['b_publisher'] }}</p>
-        <p>ISBN: {{ book_data['b_isbn'] }}</p>
+        <p><strong>Author</strong>: {{ book_data['b_author'] }}</p>
+        <p><strong>Publisher</strong>: {{ book_data['b_publisher'] }}</p>
+        <p><strong>ISBN</strong>: {{ book_data['b_isbn'] }}</p>
       </div>
       <div class="row justify-content-start">
         <div class="col-2">
           <div class="book-panel text-center">
-            <a href="#">
+            <a href="#" class="paperback">
               <div class="book-mode-paperback border border-primary">Paperback</div>
               <div class="book-price-paperback border border-primary">&#8377;{{ book_data['b_paperbook_price'] }}</div>
             </a>
@@ -38,23 +38,27 @@ Your review was added
         </div>
         <div class="col-2">
           <div class="book-panel text-center">
-            <a href="#">
-              <div class="book-mode-ebook border border-primary">Ebook</div>
-              <div class="book-price-ebook border border-primary">&#8377;{{ book_data['b_ebook_price'] }}</div>
+            <a href="#" class="ebook">
+              <div class="book-mode-ebook border border-success active">Ebook</div>
+              <div class="book-price-ebook border text-success border-success">&#8377;{{ book_data['b_ebook_price'] }}</div>
             </a>
           </div>
         </div>
       </div>
       <p class="stock">In Stock: {{ book_data['b_stock'] }}</p>
-<!--
-      <p class="rating-text"><span class="rating-button">4.5</span> (4,888)</p>
--->
       <div class="row justify-content-start buttons">
         <div class="col-4">
-          <button class="btn btn-primary w-100 py-2 cart-button">Add to Cart</button>
+          <button class="btn btn-primary w-100 py-2 add-cart-button" id="not-added">Add to Cart</button>
         </div>
         <div class="col-4">
-          <button class="btn btn-primary w-100 py-2 buy-button">Buy Book</button>
+			<form id="book-form" action="/cart" method="post">
+				{{ form1.csrf_token }}
+				{{ form1.paperback(id="book_id", value="{{book_data['b_id']}}") }}
+				{{ form1.paperback(id="paperback", value="no") }}
+				{{ form1.ebook(id="ebook", value="yes") }}
+				{{ form1.add_to_cart(id="add_to_cart", value="no") }}
+				{{ form1.submit_buy(class="btn btn-primary submit-btn buy-submit w-100 py-2") }}
+			</form>
         </div>
       </div>
     </div>

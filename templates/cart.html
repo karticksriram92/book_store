@@ -3,7 +3,6 @@
 <title>Cart</title>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_cart.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_footer.css') }}">
-<link type="text/javascript" href="{{ url_for('static', filename='cart.js') }}">
 {% endblock %}
 {% block body %}
 {% include "navbar.html" %}
@@ -102,10 +101,11 @@
 {% include "footer.html" %}
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-	const checkout_session_id = '{{checkout_session_id}}';
+	var checkout_session_id = '{{checkout_session_id}}';
 	console.log(checkout_session_id)
 	const checkout_public_key = '{{checkout_public_key}}';
 	console.log(checkout_public_key)
 </script>
 <script src="{{ url_for('static', filename='checkout.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='cart.js') }}"></script>
 {% endblock %}

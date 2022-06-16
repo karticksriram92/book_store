@@ -1,5 +1,6 @@
 from flask import Flask, Blueprint, request, render_template, session
 from comment_form import Commentform
+from book_form import BookForm
 from datetime import datetime
 import sqlite3
 
@@ -8,6 +9,7 @@ view_book_page = Blueprint('view_book_page', __name__, template_folder='template
 @view_book_page.route('/books/<b_id>', methods=['POST', 'GET'])
 def view_book(b_id):
 	form = Commentform()
+	form1 = BookForm()
 	check_status=False
 	success=False
 	if form.validate_on_submit():
@@ -36,7 +38,7 @@ def view_book(b_id):
 		update_ratings(avg_r, tcount, b_id)
 	ratings_bar = make_ratings(star_rating_dict, tcount)
 	ratings=struct_ratings(avg_r, tcount)
-	return render_template('view_book.html', book_data=book_data, ratings_bar=ratings_bar, form=form, ratings=ratings, reviews_data=reviews_data, success=success)
+	return render_template('view_book.html', book_data=book_data, ratings_bar=ratings_bar, form=form, form1=form1, ratings=ratings, reviews_data=reviews_data, success=success)
 	
 def dict_factory(cursor, row):
 	d = {}

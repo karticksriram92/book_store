@@ -23,11 +23,11 @@ def migration_prep(srow):
 	return tuple(temp_list)
 
 def get_book(b_id_num):
-	conn = sqlite3.connect("./database/book_store.db")
+	conn = sqlite3.connect("./database/bookstore.db")
 	cursor = conn.cursor()
-	cursor.execute("select * from book where b_id=?",(b_id_num,))
+	cursor.execute("select b_id, b_name, b_img_small from book where b_id=?",(b_id_num,))
 	row = cursor.fetchall()
-	return row
+	return row[0]
 
 def do_add_book(book_data):
 	conn = sqlite3.connect("./database/bookstore.db")
@@ -42,14 +42,14 @@ def do_add_book(book_data):
 def get_books_id():
 	conn = sqlite3.connect("./database/bookstore.db")
 	cursor = conn.cursor()
-	cursor.execute("select * from books")
+	cursor.execute("select * from new_arrivals")
 	# ~ cursor.execute("select * from book")
 	rows = cursor.fetchall()
 	for row in rows:
 		print("processing id: "+str(row[0]))
 		# ~ if do_add_book(migration_prep(get_book(row[0]))):
 		# ~ if change_id(row):
-		if migrate_book(row):
+		if migrate_book(get_book(row[0])):
 		# ~ if change_table(row)
 			print("id processed: "+str(row[0]))
 		else:
@@ -58,7 +58,8 @@ def get_books_id():
 def migrate_book(b_data):
 	conn = sqlite3.connect("./database/bookstore.db")
 	cursor = conn.cursor()
-	cursor.execute("insert into book(b_id, b_name, b_author, b_publisher, b_paperbook_price, b_ebook_price, b_desc, b_isbn , b_type, b_img, b_img_small, b_pdf, b_stock, b_avg_rating, b_total_rating) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", b_data)
+	# ~ cursor.execute("insert into book(b_id, b_name, b_author, b_publisher, b_paperbook_price, b_ebook_price, b_desc, b_isbn , b_type, b_img, b_img_small, b_pdf, b_stock, b_avg_rating, b_total_rating) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", b_data)
+	cursor.execute("insert into new_arrival(b_id, b_name, b_img_small) values(?,?,?)", b_data)
 	conn.commit()
 	if(cursor.rowcount):
 		conn.close()
@@ -84,4 +85,4 @@ def check_id():
 		if not (cursor.fetchone()[0]):
 			return unique_id
 
-# ~ get_books_id()
+get_books_id()

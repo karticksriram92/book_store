@@ -23,10 +23,11 @@
 	</form>
 	{% if session['uid'] %}
 	<div class="dropdown pl-3">
-		<a href="#" id="dropdownMenu" data-toggle="dropdown">
+		<a href="#" id="accountDropdownMenu" data-toggle="dropdown" data-id={{ session['uid'] }}>
 			<img src="{{ url_for('static', filename='account_icon_alpha.png') }}" width="40" height="40" >
 		</a>
-		<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu">
+		<div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdownMenu">
+			<a class="dropdown-item username"></a>
 			<a class="dropdown-item">Account</a>
 			<a class="dropdown-item">Your library</a>
 			<div class="dropdown-divider"></div>

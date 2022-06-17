@@ -53,10 +53,10 @@ Your review was added
         <div class="col-4">
 			<form id="book-form" action="/cart" method="post">
 				{{ form1.csrf_token }}
-				{{ form1.paperback(id="book_id", value="{{book_data['b_id']}}") }}
+				{{ form1.book_id(id="book_id", value=book_data['b_id']) }}
 				{{ form1.paperback(id="paperback", value="no") }}
 				{{ form1.ebook(id="ebook", value="yes") }}
-				{{ form1.add_to_cart(id="add_to_cart", value="no") }}
+				{{ form1.add_to_cart(id="add_to_cart", value="update") }}
 				{{ form1.submit_buy(class="btn btn-primary submit-btn buy-submit w-100 py-2") }}
 			</form>
         </div>

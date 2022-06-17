@@ -6,105 +6,154 @@
 {% endblock %}
 {% block body %}
 {% include "navbar.html" %}
-<div class="container">
-	<div class="row justify-content-center page-title">
-		<div class="col-2">
-			<h1>My Cart</h1>
-		</div>
-	</div>
-	<div class="row justify-content-between">
-		<div class="col-8 cart-box">
-			<div class="container-cart">
-				<div class="row cart-titles">
-					<div class="col-6">
-						<h5>Product</h5>
-					</div>
-					<div class="col-2">
-						<h5>Unit price</h5>
-					</div>
-					<div class="col-2">
-						<h5>Quantity</h5>
-					</div>
-					<div class="col-2">
-						<h5>Amount</h5>
-					</div>
-				</div>
-				{% for i in range(0,4) %}
-				<hr/>
-				<div class="row cart-product">
-					<div class="col-6">
-						<div class="row">
-						<div class="col-5 cart-book-img">
-							<img class="product-image-cart" src="{{ url_for('static', filename='scipy.png') }}">
-						</div>
-						<div class="col-7 cart-book-desc">
-							<div class="cart-book-title">
-								<h5>Book Title</h5>
-							</div>
-							<p>In Stock</p>
-							<button class="btn btn-primary">Remove</button>
-						</div>
-						</div>
-					</div>
-					<div class="col-2">
-						<p>&#8377;300</p>
-					</div>
-					<div class="col-2">
-						<select id="no" onChange="update()">
-							<option value="1" selected="selected">1</option>
-							{% for i in range(2,10) %}
-							<option value="{{i}}">{{i}}</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div class="col-2">
-						<p>&#8377;300</p>
-					</div>
-				</div>
-				{% endfor %}
-			</div>
-		</div>
-		<div class="col-4 amount-box">
-			<div class="cart-amount">
-			<h5>Summary</h5>
-			<hr/>
-			<div class="row cart-summary">
-				<div class="col-7 cost-details">
-					<p>Books price</p>
-					<p>Tax</p>
-					<p>Shipping Cost</p>
-				</div>
-				<div class="col-5 cost">
-					<p>&#8377;300</p>
-					<p>&#8377;54</p>
-					<p>&#8377;50</p>
-				</div>
-			</div>
-			<hr/>
-			<div class="row">
-				<div class="col-7">
-					<h5>Estimated Total</h5>
-				</div>
-				<div class="col-5 cost-total">
-					<h5>&#8377;404</h5>
-				</div>
-			</div>
-			<div class="row justify-content-center">
-				<div class="col-12">
-					<button class="btn btn-primary make-payment w-100">Proceed to Pay</button>
-				</div>
-			</div>
-			</div>
-		</div>
-	</div>
+<div class="container-fluid">
+  <div class="row justify-content-center page-title">
+    <div class="col-2">
+      <h1>My Cart</h1>
+    </div>
+  </div>
+  <div class="row justify-content-around">
+    <div class="col-8 mb-3 cart-box">
+      <div class="container-cart">
+        <div class="row ml-2 cart-titles">
+          <div class="col-5 m=0 p-0">
+            <h5><strong>Product</strong></h5>
+          </div>
+          <div class="col-sm p-0">
+            <h5><strong>Mode</strong></h5>
+          </div>
+          <div class="col-sm p-0">
+            <h5><strong>Price</strong></h5>
+          </div>
+          <div class="col-sm p-0">
+            <h5><strong>Quantity</strong></h5>
+          </div>
+          <div class="col-sm p-0">
+            <h5><strong>Amount</strong></h5>
+          </div>
+        </div>
+        {% for i in range(product_data | length) %}
+        <hr/>
+        <div class="row ml-2 cart-product" id="{{ product_data[i]['b_id'] }}">
+          <div class="col-5 m-0 p-0">
+            <div class="row">
+              <div class="col-4 p-0 m-0 cart-book-img">
+                <img class="product-image-cart" src="{{ url_for('static', filename=product_data[i]['b_img_small']) }}">
+              </div>
+              <div class="col-8 p-0 m-0 cart-book-desc">
+                <div class="cart-book-title">
+                  <h5>{{ product_data[i]['b_name'] }}</h5>
+                </div>
+                <p>In Stock: {{ product_data[i]['b_stock'] }}</p>
+                <button class="btn btn-primary">Remove</button>
+              </div>
+            </div>
+          </div>
+        <div class="col-sm m-0 p-0 mt-5 cart-product-details">
+		  <div class="row ml-0">
+			{% if product_data[i]['ebook_no'] == 1 %}
+          <div class="col-sm p-0">
+			<button class="ebook_select" value="yes">Ebook</button>
+          </div>
+          {% else %}
+          <div class="col-sm p-0">
+			<button class="ebook_select" value="no">Ebook</button>
+          </div>
+          {% endif %}
+          <div class="col-sm p-0">
+              <p>&#8377;{{ product_data[i]['b_ebook_price'] }}</p>
+          </div>
+          {% if product_data[i]['ebook_no'] == 1 %}
+          <div class="col-sm p-0">
+              <input type="number" class="ebook_input" min="0" max="1" value="1" disabled="disabled">
+          </div>
+          {% else %}
+          <div class="col-sm p-0">
+              <input type="number" class="ebook_input" min="0" max="1" value="" disabled="disabled">
+          </div>
+          {% endif %}
+          {% if product_data[i]['ebook_no'] == 1 %}
+          <div class="col-sm p-0 ebook_price">
+              <p>&#8377;{{ product_data[i]['b_ebook_price'] }}</p>
+          </div>
+          {% else %}
+          <div class="col-sm p-0 ebook_price">
+              <p>&#8377;0.0</p>
+          </div>
+          {% endif %}
+          </div>
+          <div class="row ml-0 mt-5">
+			  {% if product_data[i]['pbook_no'] | int > 0 %}
+          <div class="col-sm p-0">
+			<button class="pbook_select" value="yes">Paperbook</button>
+          </div>
+          {% else %}
+          <div class="col-sm p-0">
+			<button class="pbook_select" value="no">Paperbook</button>
+          </div>
+          {% endif %}
+          <div class="col-sm p-0 pbook_price">
+              <p>&#8377;{{ product_data[i]['b_paperbook_price'] }}</p>
+          </div>
+          <div class="col-sm p-0">
+              <input type="number" class="pbook_input" min="0" max="{{ product_data[i]['b_stock'] }}" value="{{ product_data[i]['pbook_no'] }}">
+          </div>
+          {% if product_data[i]['pbook_total'] %}
+          <div class="col-sm p-0 pbook_total">
+              <p>&#8377;{{ product_data[i]['pbook_total'] }}</p>
+          </div>
+          {% else %}
+          <div class="col-sm p-0 pbook_total">
+              <p>&#8377;0.0</p>
+          </div>
+          {% endif %}
+        </div>
+        </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-3 amount-box">
+      <div class="cart-amount">
+        <h5>Summary</h5>
+        <hr/>
+        <div class="row cart-summary">
+          <div class="col-8 cost-details">
+            <p>Books price</p>
+            <p>Tax</p>
+            <p>Shipping Cost</p>
+          </div>
+          <div class="col-4 cost">
+            <p>&#8377;300</p>
+            <p>&#8377;54</p>
+            <p>&#8377;50</p>
+          </div>
+        </div>
+        <hr/>
+        <div class="row">
+          <div class="col-7">
+            <h5>Estimated Total</h5>
+          </div>
+          <div class="col-5 cost-total">
+            <h5>&#8377;404</h5>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-12">
+            <button class="btn btn-primary make-payment w-100">Proceed to Pay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% include "footer.html" %}
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-	var checkout_session_id = '{{checkout_session_id}}';
-	console.log(checkout_session_id)
-	const checkout_public_key = '{{checkout_public_key}}';
-	console.log(checkout_public_key)
+  var checkout_session_id = '{{checkout_session_id}}';
+  console.log(checkout_session_id)
+  const checkout_public_key = '{{checkout_public_key}}';
+  console.log(checkout_public_key)
 </script>
 <script src="{{ url_for('static', filename='checkout.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='cart.js') }}"></script>

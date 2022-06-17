@@ -48,27 +48,23 @@ def cart_page():
 	form = BookForm()
 	if form.validate_on_submit():
 		cart_dict= { 'source' : 'view', 'book_id' : form.book_id.data, 'paperback': form.paperback.data, 'ebook' : form.ebook.data, 'no' : 1, 'status' : form.add_to_cart.data }
-		if do_cart(card_dict):
+		if do_cart(cart_dict):
 			pass
 	
+	if 'uid' in session:
+		cart_details = get_cart(session['uid'])
+		product_data, formatted_cart = format_cart(cart_details)
+		
+	# ~ else:
+		# ~ get_cart()
 	# ~ checkout_session_id=create_checkout_session(get_cart(session['uid'] if session['uid'] else ))
-	return render_template('cart.html', checkout_session_id='', checkout_public_key=app.config['STRIPE_PUBLIC_KEY'])
+	return render_template('cart.html', product_data=product_data, checkout_session_id='', checkout_public_key=app.config['STRIPE_PUBLIC_KEY'])
 
 # ~ #payment-stripe
 stripe.api_key=app.config["STRIPE_SECRET_KEY"]
 
-def create_checkout_session():
-	checkout_session = stripe.checkout.Session.create(payment_method_types=['card'],line_items=[{
-                    "name": "Learn Python",
-                    "quantity": 1,
-                    "currency": "inr",
-                    "amount": "45000",
-                },{
-                    "name": "Learning SciPy",
-                    "quantity": 1,
-                    "currency": "inr",
-                    "amount": "30000",
-                },], mode='payment',success_url=request.host_url + 'success', cancel_url= request.host_url + 'cart',)
+def create_checkout_session(total_items):
+	checkout_session = stripe.checkout.Session.create(payment_method_types=['card'],line_items=total_items, mode='payment',success_url=request.host_url + 'success', cancel_url= request.host_url + 'cart',)
 	return checkout_session
 
 class get_session_id(Resource):
@@ -76,7 +72,11 @@ class get_session_id(Resource):
 		return "hi"
 	def post(self):
 		data = request.get_json()
-		checkout_session = create_checkout_session()
+		if 'uid' in session:
+			book_data, formatted_cart = format_cart(get_cart(session['uid']))
+			checkout_session = create_checkout_session(formatted_cart)
+		# ~ else:
+			# ~ checkout_session = create_checkout_session(format_cart(get_cart(session['uid']))
 		return jsonify(session_id=checkout_session['id'])
 
 api.add_resource(get_session_id, '/get_sid')
@@ -107,18 +107,53 @@ class manage_cart(Resource):
 		if request.method == 'POST':
 			data = request.get_json()
 			if do_cart(data):
-				return {}
+				print("data:")
+				print(data)
+				if 'uid' in session:
+					book_data, formatted_cart = format_cart(get_cart(session['uid']))
+					updated_response = updated_product(book_data, data['book_id'])
+					checkout_session = create_checkout_session(formatted_cart)
+					updated_response['session_id'] = checkout_session['id']
+					print("all good till")
+					updated_response = str(updated_response).replace("'", '"')
+					print(updated_response)
+					return json.dumps(updated_response), 200	
 			else:
 				return "sorry", 500
 	
 api.add_resource(manage_cart, "/manage_cart")
+
+def updated_product(bdata, b_id):
+	updated_dict = {}
+	for i in range(0,len(bdata)):
+		if b_id in bdata[i]['b_id']:
+			updated_dict['book_id'] = b_id
+			updated_dict['paperback'] = bdata[i]['pbook_no']
+			updated_dict['ebook'] = bdata[i]['ebook_no']
+			updated_dict['pbook_total'] = bdata[i]['pbook_total']
+			response_dict = calculatePayment(bdata, updated_dict)
+	return response_dict
+			
+def calculatePayment(bdata, udict):
+	book_sum = 0
+	total_sum = 0
+	for i in range(0, len(bdata)):
+		if bdata[i]['ebook_no'] == 1:
+			book_sum += bdata[i]['pbook_total'] + bdata[i]['b_ebook_price']
+		else:
+			book_sum += bdata[i]['pbook_total']
+	udict['book_sum'] = book_sum
+	udict['shipping'] = 50
+	udict['total_sum'] = book_sum+50
+	return udict
+		
 
 def do_cart(cart_data):
 	cart_dict = {}
 	cart_dict_inner = {'paperback' : '', 'ebook' : '', 'no' : 0 }
 	cart_dict_inner['paperback'] = cart_data['paperback']
 	cart_dict_inner['ebook'] = cart_data['ebook']
-	cart_dict_inner['no'] = cart_data['no']
+	cart_dict_inner['no'] = cart_data['no']	
 	cart_dict[cart_data['book_id']] = cart_dict_inner
 	if cart_data['source'] == 'cart':
 		if update_cart(cart_dict, cart_data['book_id'], cart_data['status']):
@@ -142,7 +177,7 @@ def get_cart(u_id):
 	conn.close()
 	return rows[0]
 
-def update_cart(cart_str=None, new_item, b_id, status):
+def update_cart(new_item, b_id, status, cart_str=None):
 	if 'uid' in session:
 		cart_str = get_cart(session['uid'])
 		tname = "user"
@@ -157,9 +192,8 @@ def update_cart(cart_str=None, new_item, b_id, status):
 				cart_json[b_id]['ebook'] = new_item[b_id]['ebook']
 				cart_json[b_id]['no'] = new_item[b_id]['no']
 			cdata = json.dumps(cart_json)
-			print(cdata)
 		else:
-			cart_json[b_id] = new_item
+			cart_json[b_id] = new_item[b_id]
 			cdata = json.dumps(cart_json)
 	else:
 		cdata = json.dumps(new_item)
@@ -168,12 +202,50 @@ def update_cart(cart_str=None, new_item, b_id, status):
 def set_cart(cart_data, uid, tname):
 	conn = sqlite3.connect("./database/bookstore.db")
 	cursor = conn.cursor()
-	query = "update {{0}} set u_cart=? where u_id=?".format(tname)
-	data = cart_data, uid
-	cursor.execute(query,(cdata, uid))
+	query = "update {0} set u_cart=? where u_id=?".format(tname)
+	data = (cart_data, uid)
+	cursor.execute(query,data)
 	conn.commit()
 	if(cursor.rowcount):
 		conn.close()
 		return True
 	conn.close()
 		
+def format_cart(cdetails):
+	book_details = []
+	product_list = []
+	cdetails = json.loads(cdetails['u_cart'])
+	for bid in cdetails.keys():
+		book_details.append(get_book_details(bid))
+		
+	#return book_details also with product_list
+	for i in range(0,len(book_details)):
+		if cdetails[book_details[i]['b_id']]['paperback'] == 'no' and cdetails[book_details[i]['b_id']]['no'] == 1:
+			product_list.append({ "name" : book_details[i]['b_name']+"(ebook)", "quantity" :  1, "currency" : "inr", "amount" : str(int(book_details[i]['b_ebook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
+			book_details[i]['pbook_no'] = 0
+			book_details[i]['ebook_no'] = 1
+			book_details[i]['pbook_total'] = 0
+		elif cdetails[book_details[i]['b_id']]['ebook'] == 'no':
+			product_list.append({ "name" : book_details[i]['b_name']+"(paperbook)", "quantity" :  cdetails[book_details[i]['b_id']]['no'], "currency" : "inr", "amount" : str(int(book_details[i]['b_paperbook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
+			book_details[i]['pbook_no'] = int(cdetails[book_details[i]['b_id']]['no'])
+			book_details[i]['ebook_no'] = 0
+			book_details[i]['pbook_total'] = float(int(cdetails[book_details[i]['b_id']]['no']) * int(book_details[i]['b_paperbook_price']))
+		else:
+			product_list.append({ "name" : book_details[i]['b_name']+"(paperbook)", "quantity" :  cdetails[book_details[i]['b_id']]['no'], "currency" : "inr", "amount" : str(int(book_details[i]['b_paperbook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
+			product_list.append({ "name" : book_details[i]['b_name']+"(ebook)", "quantity" :  1, "currency" : "inr", "amount" : str(int(book_details[i]['b_ebook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
+			book_details[i]['pbook_no'] = int(cdetails[book_details[i]['b_id']]['no'])
+			book_details[i]['ebook_no'] = 1
+			book_details[i]['pbook_total'] = float(int(cdetails[book_details[i]['b_id']]['no']) * int(book_details[i]['b_paperbook_price']))
+			
+	print("book_details")
+	print(book_details)
+	return book_details, product_list
+	
+def get_book_details(b_id):
+	conn = sqlite3.connect("./database/bookstore.db")
+	conn.row_factory = dict_factory
+	cursor = conn.cursor()
+	cursor.execute("select b_id, b_name, b_paperbook_price, b_ebook_price, b_img_small, b_stock from book where b_id=?",(b_id,))
+	rows = cursor.fetchall()
+	conn.close()
+	return rows[0]

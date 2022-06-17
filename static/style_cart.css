@@ -6,12 +6,12 @@
 	margin-top: 20px;
 }
 
-.cart-box, .cart-amount {
+.cart-amount, .cart-box {
 	margin: auto 0px;
 	margin-top: 20px;
 	border: 1px white solid;
 	border-radius: 4px;
-	box-shadow: 2px 2px 4px black;
+	box-shadow: 0 0 2px black;
 }
 
 .cart-amount {
@@ -44,6 +44,7 @@ hr {
 
 .product-image-cart {
 	width: 120px;
+	min-height: 200px;
 }
 
 .cart-book-desc {
@@ -66,3 +67,16 @@ hr {
 .cost, .cost-total {
 	text-align: right;
 }
+
+
+/* flip box */
+
+
+
+
+
+
+
+
+
+

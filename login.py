@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, request, render_template, redirect, url_for, session, Blueprint
 from login_form import Loginform
 from register_form import Registerform
+from book_store import app
 from datetime import datetime
 import sqlite3, uuid
+from flask_mail import Mail, Message
 
 login_page=Blueprint("login_page", __name__, template_folder="templates")
 
@@ -55,7 +57,9 @@ def register():
 			print(register_tuple)
 			if do_register(register_tuple):
 				session["uid"] = register_tuple[0]
-				return redirect("/")
+				if sendConfirmation(form.email.data, request.base_url):
+					return "mail sent"
+				# ~ return redirect("/")
 	return render_template("register.html", form=form, msg=msg)
 	
 def check_username(uname, email):
@@ -90,3 +94,33 @@ def do_register(rdata):
 		conn.close()
 		return True
 	conn.close()
+
+def sendConfirmation(email_id, base_url):
+	email=[]
+	email.append(email_id)
+	token = gen_conf_token(email)
+	#must change splitting character based of url /e for /email
+	confirm_url = base_url.split('/r')[0]+'/confirm/'+token
+	html = render_template('activate.html', confirm_url=confirm_url)
+	subject = "Please confirm your email"
+	send_mail(email, subject, html)
+	return True
+
+def send_mail(to, subject, template):
+	msg = Message(subject=subject, sender="sriram5130@gmail.com", recipients=to)
+	msg.html= template
+	mail.send(msg)
+
+@app.route('/confirm/<token>')	
+def confirm_email(token):
+	try:
+		email = confirm_token(token)
+	except:
+		print("the confirmation link is expired or failed")
+		return "not working"
+	#code for already confirmed goes here
+	
+	else:
+		print("user confirmed")
+		return "thanks for confirming"
+		#confirm user and add to db of date time now and redirect

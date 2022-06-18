@@ -1,5 +1,5 @@
-.container {
-	margin-bottom: 20px;
+.container-fluid {
+	min-height: calc(100vh - 176px);
 }
 
 .page-title {
@@ -68,6 +68,14 @@ hr {
 	text-align: right;
 }
 
+.no-cart {
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+}
 
 /* flip box */
 

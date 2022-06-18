@@ -1,6 +1,7 @@
-from flask import Flask, jsonify, request, render_template, redirect, url_for, session
+from flask import Flask, jsonify, request, render_template, redirect, url_for, session, make_response
 from flask_restful import Resource, Api
 import sqlite3, uuid, stripe, json
+from itsdangerous import URLSafeTimedSerializer
 from login import login_page, register_page
 from home import home_page
 from pdf import pdf_page
@@ -15,11 +16,24 @@ from book_form import BookForm
 app = Flask(__name__, template_folder="templates")
 api = Api(app)
 
+
 app.config["SECRET_KEY"] = "test"
+app.config["SECURITY_PASSWORD_SALT"] = "email-test"
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 app.config["STRIPE_PUBLIC_KEY"]="pk_test_51KzcRkSE3GG6tmtIKjMMMEQ5u1RrO6bc72VNQSsjktsWXyw4aXAt6Za8kEFEQIOJ9pXO1PYWkdbX5PPQFUYCozYW00wRXjLLz9"
 app.config["STRIPE_SECRET_KEY"]="sk_test_51KzcRkSE3GG6tmtIDCHA8ybbSJgv8bTWeShIwnmsVrxP1BIavbzhnA2xt7GKNir7CzHWfQDK8d7ebQsABWtdklWJ00CXpyJJYL"
+
+app.config.update(
+	MAIL_SERVER = 'smtp.gmail.com',
+	MAIL_PORT = 465,
+	MAIL_USE_TLS = False,
+	MAIL_USE_SSL = True,
+	MAIL_USERNAME = 'sriram5130@gmail.com',
+	MAIL_PASSWORD = 'tptfqmcnkytdzqbs'
+)
+
+mail = Mail(app)
 
 app.register_blueprint(login_page)
 app.register_blueprint(register_page)
@@ -54,11 +68,17 @@ def cart_page():
 	if 'uid' in session:
 		cart_details = get_cart(session['uid'])
 		product_data, formatted_cart = format_cart(cart_details)
-		
+		sum_data = updated_product(product_data)
+		if product_data:
+			checkout_session = create_checkout_session(formatted_cart)
+			products=True
+		else:
+			checkout_session={'id':''}
+			products=False
 	# ~ else:
 		# ~ get_cart()
 	# ~ checkout_session_id=create_checkout_session(get_cart(session['uid'] if session['uid'] else ))
-	return render_template('cart.html', product_data=product_data, checkout_session_id='', checkout_public_key=app.config['STRIPE_PUBLIC_KEY'])
+	return render_template('cart.html', product_data=product_data, sum_data=sum_data, products=products, checkout_session_id=checkout_session['id'], checkout_public_key=app.config['STRIPE_PUBLIC_KEY'])
 
 # ~ #payment-stripe
 stripe.api_key=app.config["STRIPE_SECRET_KEY"]
@@ -107,44 +127,60 @@ class manage_cart(Resource):
 		if request.method == 'POST':
 			data = request.get_json()
 			if do_cart(data):
-				print("data:")
-				print(data)
 				if 'uid' in session:
 					book_data, formatted_cart = format_cart(get_cart(session['uid']))
-					updated_response = updated_product(book_data, data['book_id'])
+					updated_response = updated_product(book_data, b_id=data['book_id'])
+					if data['status'] == 'delete':
+						updated_response['status'] = data['status']
+						updated_response = str(updated_response).replace("'", '"')
+						return make_response(jsonify(updated_response), 200	)
 					checkout_session = create_checkout_session(formatted_cart)
 					updated_response['session_id'] = checkout_session['id']
-					print("all good till")
+					updated_response['status'] = data['status']
 					updated_response = str(updated_response).replace("'", '"')
-					print(updated_response)
-					return json.dumps(updated_response), 200	
+					return make_response(jsonify(updated_response), 200	)
 			else:
 				return "sorry", 500
 	
 api.add_resource(manage_cart, "/manage_cart")
 
-def updated_product(bdata, b_id):
+def updated_product(bdata, b_id=None):
 	updated_dict = {}
+	if len(bdata) == 0:
+		updated_dict['book_id'] = b_id
+		response_dict = calculatePayment(bdata, updated_dict)
+		return response_dict
 	for i in range(0,len(bdata)):
 		if b_id in bdata[i]['b_id']:
 			updated_dict['book_id'] = b_id
-			updated_dict['paperback'] = bdata[i]['pbook_no']
-			updated_dict['ebook'] = bdata[i]['ebook_no']
-			updated_dict['pbook_total'] = bdata[i]['pbook_total']
+			updated_dict['paperback'] = str(bdata[i]['pbook_no'])
+			updated_dict['ebook'] = str(bdata[i]['ebook_no'])
+			updated_dict['ebook_total'] = str(bdata[i]['b_ebook_price'])
+			updated_dict['pbook_total'] = str(bdata[i]['pbook_total'])
 			response_dict = calculatePayment(bdata, updated_dict)
+	if not b_id:
+		updated_dict['ebook'] = str(bdata[i]['ebook_no'])
+		updated_dict['ebook_total'] = str(bdata[i]['b_ebook_price'])
+		updated_dict['pbook_total'] = str(bdata[i]['pbook_total'])
+		response_dict = calculatePayment(bdata, updated_dict)
 	return response_dict
 			
 def calculatePayment(bdata, udict):
 	book_sum = 0
 	total_sum = 0
+	if len(bdata) == 0:
+		udict['book_sum'] = 0.0
+		udict['shipping'] = 0.0
+		udict['total_sum'] = 0.0
+		return udict
 	for i in range(0, len(bdata)):
 		if bdata[i]['ebook_no'] == 1:
 			book_sum += bdata[i]['pbook_total'] + bdata[i]['b_ebook_price']
 		else:
 			book_sum += bdata[i]['pbook_total']
-	udict['book_sum'] = book_sum
+	udict['book_sum'] = str(book_sum)
 	udict['shipping'] = 50
-	udict['total_sum'] = book_sum+50
+	udict['total_sum'] = str(book_sum+50)
 	return udict
 		
 
@@ -157,7 +193,6 @@ def do_cart(cart_data):
 	cart_dict[cart_data['book_id']] = cart_dict_inner
 	if cart_data['source'] == 'cart':
 		if update_cart(cart_dict, cart_data['book_id'], cart_data['status']):
-			#must add code to get new checkout_session id with current cart details(get_cart).
 			return True
 	elif update_cart(cart_dict, cart_data['book_id'], cart_data['status']):
 		return True
@@ -237,7 +272,6 @@ def format_cart(cdetails):
 			book_details[i]['ebook_no'] = 1
 			book_details[i]['pbook_total'] = float(int(cdetails[book_details[i]['b_id']]['no']) * int(book_details[i]['b_paperbook_price']))
 			
-	print("book_details")
 	print(book_details)
 	return book_details, product_list
 	
@@ -249,3 +283,61 @@ def get_book_details(b_id):
 	rows = cursor.fetchall()
 	conn.close()
 	return rows[0]
+
+
+
+########Mail#########
+# ~ def send_mail(to, subject, template):
+	# ~ msg = Message(subject=subject, sender="sriram5130@gmail.com", recipients=to)
+	# ~ msg.html= template
+	# ~ mail.send(msg)
+	
+# ~ @app.route('/email', methods=["POST", "GET"])
+# ~ def handleRegister(email_id):
+	# ~ email=[]
+	# ~ email.append(email_id)
+	# ~ token = gen_conf_token(email)
+	# ~ url = request.base_url+'/confirm/'
+	# ~ confirm_url = url_for('confirm_email', token=token)
+	##confirm_url = url_for(url, token=token,  _extrenal=True)
+	# ~ #must change splitting character based of url /e for /email
+	# ~ confirm_url = request.base_url.split('/e')[0]+confirm_url
+	# ~ html = render_template('activate.html', confirm_url=confirm_url)
+	# ~ subject = "Please confirm your email"
+	# ~ send_mail(email, subject, html)
+	# ~ return "mail sent"
+	
+	#redirect to home page
+	#saying confirmation mail is sent and user need to confirm.
+	#(use flash or alert msg like navbar alert)
+	
+
+
+
+########Token#########
+def gen_conf_token(email):
+	serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+	return URLSafeTimedSerializer(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+	
+def confirm_token(token, expiration=862000):
+	serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+	try:
+		email = serializer.loads(token, salt=app.config['SECRET_KEY'], max_age=expiration)
+	except:
+		return False
+	else:
+		return email
+	
+# ~ @app.route('/confirm/<token>')	
+# ~ def confirm_email(token):
+	# ~ try:
+		# ~ email = confirm_token(token)
+	# ~ except:
+		# ~ print("the confirmation link is expired or failed")
+		# ~ return "not working"
+	# ~ #code for already confirmed goes here
+	
+	# ~ else:
+		# ~ print("user confirmed")
+		# ~ return "thanks for confirming"
+		# ~ #confirm user and add to db of date time now and redirect

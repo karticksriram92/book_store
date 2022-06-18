@@ -21,39 +21,36 @@ function setEvent(cs_id) {
 
 }
 
-function get_id() {
-	const data = { 'u_id' : 'u_id' }
-	fetch('/get_sid', {
-			method: 'POST',
-			headers: {
-				'Content-Type':'application/json',
-				},
-			body: JSON.stringify(data),
-		})
-		.then(response => response.json())
-		.then(result => setEvent(result['session_id']));
-};
+//~ function get_id() {
+	//~ const data = { 'u_id' : 'u_id' }
+	//~ fetch('/get_sid', {
+			//~ method: 'POST',
+			//~ headers: {
+				//~ 'Content-Type':'application/json',
+				//~ },
+			//~ body: JSON.stringify(data),
+		//~ })
+		//~ .then(response => response.json())
+		//~ .then(result => setEvent(result['session_id']));
+//~ };
 //end
 
 function handleCheckBox(e) {
-	//~ e.currentTarget.preventDefault;
-	console.log(e.currentTarget);
-	if(e.currentTarget.value === "selected") {
+	if(e.currentTarget.value === "yes") {
 		console.log("setting false")
-		e.currentTarget.value="not-selected";
+		e.currentTarget.value="no";
 		e.currentTarget.style.opacity = 0.5;
 	}
 	else {
 		console.log("setting true")
-		e.currentTarget.value="selected";
+		e.currentTarget.value="yes";
 		e.currentTarget.style.opacity = 1;
 	}
-	//~ addCart('
+	addCart(e, 'update');
 }
 
 function addCart(e, call_status) {
 	var current = e.currentTarget;
-	console.log(current);
 	while(true) {
 		if(current.classList.contains('cart-product')) {
 			break;
@@ -68,23 +65,69 @@ function addCart(e, call_status) {
 	const book_id = current.id;
 	const num = current.querySelector('.pbook_input').value;
 	const data = { 'source': 'cart', 'book_id' : book_id, 'ebook': ebook_selected, 'paperback': paperback_selected, 'no' : num, 'status' :  status };
+	var result;
 	//~ const url = window.location.href+'/cart';
-	console.log(book_id)
-	fetch('/manage_cart', {
+	console.log("book_id");
+	console.log(book_id);
+	//~ var require = function() { return
+	getProper(data).then(r => { changeValues(r); });
+	
+	//~ require().then(function (r)  {return changeValues;} );
+}
+
+async function getProper(data) {
+	const r = await fetch('/manage_cart', {
 		method: 'POST',
 		headers: {
 			'Content-Type':'application/json',
 			},
 		body: JSON.stringify(data),
 	})
-	.then(response => { if(response.status == 200) { 
-		changeValues();
-		console.log(response.status); 
-		console.log(response.json()); 
+	.then(response => { if(response.ok) { 
+		result = response.json();
+		return result;
 	}});
+	return r;
 }
 
-function getEbookCheckbox(tag, check_class) {
+function changeValues(udata) {
+	udata = JSON.parse(udata);
+	console.log(udata);
+	var product = document.getElementById(udata['book_id'])
+	//~ console.log(product)
+	if(udata['status'] === 'delete') {
+		console.log("hello");
+		product.style.display="none";
+		udata['session_id'] = '';
+		document.querySelector('.make-payment').disabled = true;
+	}
+	
+	if(udata['status'] === 'update') {
+		console.log("still going");
+	if(udata['ebook'] === 0) {
+		product.querySelector('.ebook_input').value = "";
+		product.querySelector('.ebook_price').innerHTML = "&#8377;0.0";
+	}
+	else {
+		product.querySelector('.ebook_input').value = "1";
+		product.querySelector('.ebook_price').innerHTML = "&#8377;"+udata['ebook_total'];
+	}
+	if(udata['paperback'] === 0) {
+		product.querySelector('.pbook_total').innerHTML = "&#8377;0.0";
+	}
+	else {
+		product.querySelector('.pbook_total').innerHTML = "&#8377;"+udata['pbook_total'];
+	}
+}
+	document.querySelector('.book-sum').innerHTML = udata['book_sum'];
+	document.querySelector('.shipping').innerHTML = udata['shipping'];
+	document.querySelector('.total-sum').innerHTML = udata['total_sum'];
+	
+	//setting session id
+	setEvent(udata['session_id']);	
+}
+
+function getElems(tag, check_class) {
 	select_elems = [];
 	var input_elems = document.getElementsByTagName(tag);
 	
@@ -100,15 +143,22 @@ function getEbookCheckbox(tag, check_class) {
 	}
 	return;
 	}
+	if(tag === "button") {
+		for (var i=0; i<select_elems.length; ++i) {
+			select_elems[i].addEventListener('click', function(e) { addCart(e,'delete'); });
+		}
+	return;
+	}
 	
 	for (var i=0; i<select_elems.length; ++i) {
 		select_elems[i].addEventListener('click', handleCheckBox);
 	}
 }
 
-document.addEventListener("DOMContentLoaded", get_id);
+//~ document.addEventListener("DOMContentLoaded", get_id);
 document.addEventListener("DOMContentLoaded", function() {
-	getEbookCheckbox("button", "ebook_select");
-	getEbookCheckbox("button", "pbook_select");
-	getEbookCheckbox("input", "pbook_input");
+	getElems("button", "ebook_select");
+	getElems("button", "pbook_select");
+	getElems("input", "pbook_input");
+	getElems("button", "delete");
 });

@@ -2,6 +2,7 @@
 var stripe = Stripe(checkout_public_key);
 
 const button = document.querySelector('.make-payment');
+//~ button.addEventListener('click',  );
 
 function user_payment() {
 	console.log(checkout_session_id);

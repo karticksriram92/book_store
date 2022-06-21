@@ -1,7 +1,7 @@
+var already_added = false;
+
 function toggleOption(e) {
-	console.log("i got called");
 	if(document.getElementById(e).value == "yes") {
-		console.log("setting false");
 		document.getElementById(e).value = "no";
 	}
 	else {
@@ -27,10 +27,40 @@ function changeBook(e) {
 function toggleBookOption() {
 	paperback = document.getElementsByClassName('paperback')[0];
 	paperback.addEventListener('click', function(e) { 
-		if(ebook.children[0].classList.contains('active')) { changeBook(this); toggleOption('paperback'); }});
+		if(ebook.children[0].classList.contains('active')) { 
+			if(document.querySelector('.add-cart-button').id === "added") {
+				already_added=true;
+				changeBook(this); 
+				toggleOption('paperback');
+				changeStatus();
+			}
+			else {
+				if(already_added === true) {
+					changeStatus();
+					changeBook(this); 
+					toggleOption('paperback');
+				}
+				else {
+					changeBook(this); 
+					toggleOption('paperback');
+				}
+			}
+		}
+			});
 	ebook = document.getElementsByClassName('ebook')[0];
 	ebook.addEventListener('click', function(e) { 
-		if(paperback.children[0].classList.contains('active')) { changeBook(this); toggleOption('ebook'); }});
+		if(paperback.children[0].classList.contains('active')) {
+			if(document.querySelector('.add-cart-button').id === "added") {
+				changeBook(this); 
+				toggleOption('ebook');
+				changeStatus();
+			}
+			else {
+				changeBook(this); 
+				toggleOption('ebook');
+			}
+		}
+			});
 }
 
 function addCart() {
@@ -39,8 +69,6 @@ function addCart() {
 	const status = document.querySelector('.add-cart-button').id;
 	const book_id = document.querySelector('.book-image').getAttribute('data-id')
 	const data = { 'source': 'view', 'book_id' : book_id, 'ebook': ebook_selected, 'paperback': paperback_selected, 'no' : 1, 'status' :  status };
-	//~ const url = window.location.href+'/cart';
-	console.log(book_id)
 	fetch('/manage_cart', {
 		method: 'POST',
 		headers: {

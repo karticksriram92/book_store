@@ -14,4 +14,27 @@ function get_username() {
 	}
 };
 
+function getRecentViews() {
+	var page_url = window.location.href;
+	const urlArray = page_url.split("/");
+	const u_id = $('#accountDropdownMenu').data('id');
+	if(u_id) {
+		if(urlArray[3] === "books") {
+			setRecentView(u_id, urlArray[4]);
+		}
+	}
+};
+
+function setRecentView(u_id, book_id) {
+	const data = { 'u_id' : u_id, 'book_id' : book_id }
+	fetch('/addRecent', {
+		method: 'POST',
+		headers: {
+			'Content-Type' : 'application/json',
+		},
+		body: JSON.stringify(data),
+	});
+};
+
 document.addEventListener("DOMContentLoaded", get_username);
+document.addEventListener("DOMContentLoaded", getRecentViews);

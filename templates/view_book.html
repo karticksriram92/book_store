@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block head %}
-<title>Book name</title>
+<title>{{ book_data['b_name'] }}</title>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_view_book.css') }}" >
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_footer.css') }}" >
 <script type="text/javascript" src="{{ url_for('static', filename='view_book.js') }}"></script>
@@ -30,32 +30,70 @@ Your review was added
       <div class="row justify-content-start">
         <div class="col-2">
           <div class="book-panel text-center">
-            <a href="#" class="paperback">
+            {% if book_status['cart'] %}
+            <a href="#" class="paperback" style="pointer-events:none;">
+			{% else %}
+			 <a href="#" class="paperback">
+			{% endif %}
+				{% if book_status['pbook_status'] == "yes" %}
+				<div class="book-mode-paperback border border-success active">Paperback</div>
+              <div class="book-price-paperback border text-success border-success">&#8377;{{ book_data['b_paperbook_price'] }}</div>
+              {% else %}
               <div class="book-mode-paperback border border-primary">Paperback</div>
               <div class="book-price-paperback border border-primary">&#8377;{{ book_data['b_paperbook_price'] }}</div>
+              {% endif %}
             </a>
           </div>
         </div>
         <div class="col-2">
           <div class="book-panel text-center">
-            <a href="#" class="ebook">
+			{% if book_status['ebook_owned'] %}
+            <a href="#" class="ebook" style="pointer-events:none;">
+			{% else %}
+			 <a href="#" class="ebook">
+			{% endif %}
+				{% if book_status['ebook_status'] == "no" %}
+				<div class="book-mode-ebook border border-primary">Ebook</div>
+              <div class="book-price-ebook border border-primary">&#8377;{{ book_data['b_ebook_price'] }}</div>
+              {% elif book_status['ebook_owned'] %}
               <div class="book-mode-ebook border border-success active">Ebook</div>
               <div class="book-price-ebook border text-success border-success">&#8377;{{ book_data['b_ebook_price'] }}</div>
+              {% else %}
+				<div class="book-mode-ebook border border-success active">Ebook</div>
+				<div class="book-price-ebook border text-success border-success">&#8377;{{ book_data['b_ebook_price'] }}</div>
+              {% endif %}
             </a>
           </div>
         </div>
+        {% if book_status['ebook_owned'] %}
+        <div class="col-4">
+			<a href="/pdf/{{ book_data['b_id'] }}" class="btn btn-primary w-100 py-2 mt-2 read-book">Read Book</a>
+        </div>
+        {% endif %}
       </div>
       <p class="stock">In Stock: {{ book_data['b_stock'] }}</p>
       <div class="row justify-content-start buttons">
         <div class="col-4">
+			{% if book_status['cart'] %}
+			<button class="btn btn-primary w-100 py-2 add-cart-button" id="added">Remove from Cart</button>
+			{% else %}
           <button class="btn btn-primary w-100 py-2 add-cart-button" id="not-added">Add to Cart</button>
+          {% endif %}
         </div>
         <div class="col-4">
 			<form id="book-form" action="/cart" method="post">
 				{{ form1.csrf_token }}
 				{{ form1.book_id(id="book_id", value=book_data['b_id']) }}
+				{% if book_status['pbook_status'] == "yes" %}
+				{{ form1.paperback(id="paperback", value="yes") }}
+				{% else %}
 				{{ form1.paperback(id="paperback", value="no") }}
+				{% endif %}
+				{% if book_status['pbook_status'] == "no" %}
 				{{ form1.ebook(id="ebook", value="yes") }}
+				{% else %}
+				{{ form1.ebook(id="ebook", value="yes") }}
+				{% endif %}
 				{{ form1.add_to_cart(id="add_to_cart", value="update") }}
 				{{ form1.submit_buy(class="btn btn-primary submit-btn buy-submit w-100 py-2") }}
 			</form>

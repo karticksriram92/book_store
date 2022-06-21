@@ -1,35 +1,44 @@
 {% extends "base.html" %}
 {% block head %}
-	<title>Login</title>
-	<link type='text/css' rel='stylesheet' href="{{ url_for('static', filename='style_login.css') }}">
+<title>Login</title>
+<link type='text/css' rel='stylesheet' href="{{ url_for('static', filename='style_login.css') }}">
 {% endblock %}
-
 {% block body %}
-	<div class="formbox">
-		<div class="container">
-			<h1>Login Form</h1>
-			<form action="/login" method="post">
-				<div class="row">
-					<div class="col-sm">
-				{{ form.csrf_token }}
-				<div class="form-group">
-					{{ form.username.label }}
-					{{ form.username(class="form-control") }}
-				</div>
-				<div class="form-group">
-					{{ form.password.label }}
-					{{ form.password(class="form-control") }}
-				</div>
-				{% if msg %}
-				<div class="alert alert-danger alert-dismissable fade show">
-					{{ msg }}
-				</div>
-				{% endif %}
-				{{ form.submit(class="btn btn-primary submit-btn mx-3") }}
-				<div class="link"><p>New user? <a href="/register">Register here</a></p></div>
-				</div>
-				</div>
-			</form>
-		</div>
-	</div>
+<div class="formbox">
+  <div class="container">
+    <form action="/login" method="post">
+      <div class="row">
+        <div class="col-6 p-0">
+          <img class="w-100" src="{{ url_for('static', filename='login_half_bg.png') }}">
+        </div>
+        <div class="col-6">
+          <h1>Login Form</h1>
+          <div class="login-box mt-5">
+            {{ form.csrf_token }}
+            <div class="form-group">
+              {{ form.username.label }}
+              {{ form.username(class="form-control") }}
+            </div>
+            <div class="form-group">
+              {{ form.password.label }}
+              {{ form.password(class="form-control") }}
+            </div>
+            {% if msg %}
+            <div class="alert alert-danger alert-dismissable fade show ml-3 mb-0">
+              {{ msg }}
+            </div>
+            {% endif %}
+            {{ form.submit(class="btn btn-primary submit-btn mx-3 mt-3") }}
+            <div class="link">
+              <p>New user? <a href="/register">Register here</a></p>
+            </div>
+            <div class="link mt-0">
+              <p><a href="/forgot">Forgot password</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}

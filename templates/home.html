@@ -134,5 +134,53 @@
 	<a href="#"><img class="" src="{{ url_for('static', filename='banners/sale.jpg') }}"></a>
 </div>
 
+<div class="container">
+	<div class="row justify-content-center my-4 font-weight-bold">
+		<div class="col-3 text-primary text-center">
+			<h1 class="">Recent Views</h1>
+		</div>
+	</div>
+</div>
+
+<div id="carouselRecentViews" class="carousel slide cbooks pb-5" data-ride="carousel" data-interval="false">
+  <div class="carousel-inner">
+	{% for inner_list in trending_book %}
+	{% if inner_list == trending_book[0] %}
+    <div class="carousel-item active">
+		<div class="row justify-content-center">
+			<div class="col-11 d-flex justify-content-between">
+				{% for i in range(inner_list | length) %}
+				<div class="w-15">
+					<a data-toggle="tooltip" title="{{ inner_list[i]['b_name'] }}" href="/books/{{ inner_list[i]['b_id'] }}"><img src="{{ url_for('static', filename=inner_list[i]['b_img_small']) }}"></a>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+    </div>
+    {% else %}
+    <div class="carousel-item">
+		<div class="row justify-content-center">
+			<div class="col-11 d-flex justify-content-between">
+				{% for i in range(inner_list | length) %}
+				<div class="w-15">
+					<a data-toggle="tooltip" title="{{ inner_list[i]['b_name'] }}" href="/books/{{ inner_list[i]['b_id'] }}"><img src="{{ url_for('static', filename=inner_list[i]['b_img_small']) }}"></a>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+  <a class="carousel-control-prev" href="#carouselRecentViews" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselRecentViews" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+
 {% include "footer.html" %}
 {% endblock %}

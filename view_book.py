@@ -2,7 +2,7 @@ from flask import Flask, Blueprint, request, render_template, session
 from comment_form import Commentform
 from book_form import BookForm
 from datetime import datetime
-import sqlite3
+import sqlite3, json
 
 view_book_page = Blueprint('view_book_page', __name__, template_folder='templates')
 
@@ -12,6 +12,7 @@ def view_book(b_id):
 	form1 = BookForm()
 	check_status=False
 	success=False
+	
 	if form.validate_on_submit():
 		date_now = datetime.now().date()
 		print("validating")
@@ -38,7 +39,25 @@ def view_book(b_id):
 		update_ratings(avg_r, tcount, b_id)
 	ratings_bar = make_ratings(star_rating_dict, tcount)
 	ratings=struct_ratings(avg_r, tcount)
-	return render_template('view_book.html', book_data=book_data, ratings_bar=ratings_bar, form=form, form1=form1, ratings=ratings, reviews_data=reviews_data, success=success)
+	book_status = {'ebook_status':'yes', 'pbook_status':'no', 'pbook_owned': False,'ebook_owned':False,'cart':False}
+	if 'uid' in session:
+		user_data = get_user_data(session['uid'])
+		if user_data['u_cart']:
+			print(user_data['u_cart'])
+			user_cart = json.loads(user_data['u_cart'])
+			if b_id in user_cart.keys():
+				print(user_cart.keys())
+				book_status['cart'] = True
+				book_status['ebook_status'] = user_cart[b_id]['ebook']
+				book_status['pbook_status'] = user_cart[b_id]['paperback']
+			if user_data['u_paper_books_owned']:
+				if b_id in user_data['u_paper_books_owned']:
+					book_status['pbook_owned'] = True
+			if user_data['u_ebooks_owned']:
+				if b_id in user_data['u_ebooks_owned']:
+					book_status['ebook_owned'] = True
+	return render_template('view_book.html', book_data=book_data, book_status=book_status, ratings_bar=ratings_bar, form=form, form1=form1, ratings=ratings, reviews_data=reviews_data, success=success)
+	# ~ return render_template('view_book.html', book_data=book_data, ratings_bar=ratings_bar, form=form, form1=form1, ratings=ratings, reviews_data=reviews_data, success=success)
 	
 def dict_factory(cursor, row):
 	d = {}

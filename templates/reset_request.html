@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Reset Email Sent</title>
+	<link type='text/css' rel='stylesheet' href="{{ url_for('static', filename='reset_request.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="confirmation">
+<div class="container">
+	<div class="row text-center my-5">
+		<div class="col-sm">
+		<div class="mt-0"><i class="fas fa-circle-check fa-4x text-secondary"></i></div>
+		<div class="d-none"></div>
+		<div class="mt-3">
+			<h2>Password Reset Email Sent</h2>
+		</div>
+		<div class="confirm-info mx-5 my-3">
+			<p>We have sent you an email for your account recovery.</br>Please check your inbox.</p>
+		</div>
+		<div>
+			<a href="/home" class="btn btn-success mt-3 px-5">Done</a>
+		</div>
+		</div>
+	</div>
+</div>
+</div>
+<script src="https://kit.fontawesome.com/69b4baa61f.js" crossorigin="anonymous"></script>
+{% endblock %}

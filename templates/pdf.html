@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Search</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_homepage.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_footer.css') }}">
+{% endblock %}
+{% block body %}
+{% include "navbar.html" %}
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-12 search-result-text">
+				<div id="pdf-view" style="height: 360px; width: 500px;"></div>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js" integrity="sha512-MoP2OErV7Mtk4VL893VYBFq8yJHWQtqJxTyIAsCVKzILrvHyKQpAwJf9noILczN6psvXUxTr19T5h+ndywCoVw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+				<script>PDFObject.embed("{{ url_for('static', filename='/pdf/e2bc5ac8-3794-4cc4-a875-b6836f3b435d.pdf') }}", "#pdf-view");</script>
+			</div>
+		</div>
+	</div>
+{% include "footer.html" %}
+{% endblock %}

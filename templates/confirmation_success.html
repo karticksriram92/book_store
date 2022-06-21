@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Success</title>
+	<link type='text/css' rel='stylesheet' href="{{ url_for('static', filename='style_confirmation_success.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="confirmation">
+<div class="container">
+	<div class="row text-center my-5">
+		<div class="col-sm">
+		<div class="mt-2"><i class="fa-solid fa-check fa-4x"></i></div>
+		<div class="d-none"></div>
+		<div class="mt-1">
+			<h2>Success</h2>
+		</div>
+		<div class="confirm-info mx-5 my-3">
+			<h6>Congrats! Your email has been confirmed.</br>Welcome to the world of books.</h6>
+		</div>
+		<div>
+			<a href="/login" class="btn btn-success mt-3 px-5">Login</a>
+		</div>
+		</div>
+	</div>
+</div>
+</div>
+<script src="https://kit.fontawesome.com/69b4baa61f.js" crossorigin="anonymous"></script>
+{% endblock %}

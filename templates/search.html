@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block head %}
 	<title>Search</title>
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_homepage.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='search.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_footer.css') }}">
 {% endblock %}
 {% block body %}
@@ -21,12 +21,10 @@
 				<div class="book_container">
 				<div class="book_block">
 					<div class="book_img">
-
 						<!--this works with /images as start becoz its refers to path by static-->
-						<img class="image" height="300" src="{{ url_for('static', filename=inner_list[i]['b_img_small']) }}" />
+						<a href="/books/{{inner_list[i]['b_id']}}"><img class="image" height="250" src="{{ url_for('static', filename=inner_list[i]['b_img_small']) }}" /></a>
 						<!--this works with /static as start becoz its refers to path by root
 						<img class="image" height="300" src="{{ inner_list[i]['b_img_small'] }}" /> --> 
-
 					</div>
 					<div class="book_desc">
 						<div class="name">

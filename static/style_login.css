@@ -1,10 +1,14 @@
+body {
+	background: linear-gradient(130deg, cyan, blue);
+}
+
 .formbox {
-	margin: 2.5em auto; 
-	width:30%;
-	border-top: 1px solid #D0D0D0;
-	border-left: 1px solid #D0D0D0;
+	background: white;
+	margin: 4em auto; 
+	width:60%;
 	border-radius: 4px; 
-	box-shadow: 2px 2px 4px grey;
+	box-shadow: 0px 0px 4px grey;
+	overflow: hidden;
 }
 
 h1 {
@@ -24,7 +28,7 @@ h1 {
 }
 
 .alert {
-	margin-top:-16px;
+	margin-top:calc(-2em + 1px);
 	margin-right:15px;
 }
 
@@ -44,5 +48,12 @@ h1 {
 }
 
 .link p {
-	margin-bottom:.5rem;
+	margin-bottom:0;
+}
+
+.login-box {
+	position: relative;
+	height: 50%;
+	top: 50%;
+	transform: translateY(-100%);
 }

@@ -1,4 +1,13 @@
+body {
+    background-image: url('/static/bg3.jpg');
+    background-size: cover;
+}
+
 .formbox {
+/*
+	opacity: 0.8;
+*/
+	background-color: rgba(255,255,255, 0.5);
 	position: absolute;
 	width:50%;
 	border-top: 1px solid #D0D0D0;
@@ -30,9 +39,24 @@ h1 {
 	width:100%;
 	margin-bottom:16px; 
 	margin-right:15px;
+	background-color: rgba(255,255,255, 0.0);
 }
 
 .form-control {
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom: 1px black solid;
+	border-radius: 0px;
+	background-color: rgba(255,255,255, 0.0);
+	width:100%; 
+	padding:5px;
+}
+
+.form-control:focus {
+	box-shadow: none;
+	border-bottom: 1px green solid;
+	background-color: rgba(255,255,255, 0.0);
 	width:100%; 
 	padding:5px;
 }

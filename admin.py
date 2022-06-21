@@ -1,7 +1,11 @@
-from flask import Flask, request, render_template, redirect, url_for, session, Blueprint
+from flask import Flask, request, render_template, redirect, url_for, session, Blueprint, current_app
 from adm_book_reg_form import AddBook_Form
-import sqlite3, random, uuid, app, io, os
+import sqlite3, random, uuid, io, os
 from PIL import Image
+# ~ from bookstore import app
+
+# ~ print(current_app.config['STRIPE_PUBLIC_KEY'])
+# ~ print("hi")
 
 adm_view_book_page = Blueprint("adm_view_book_page", __name__, template_folder="templates")
 adm_add_book_page = Blueprint("adm_add_book_page", __name__, template_folder="templates")
@@ -12,6 +16,8 @@ def view_book():
 
 @adm_add_book_page.route('/admin/add_book', methods=['POST', 'GET'])
 def add_book():
+	print(current_app.config['STRIPE_PUBLIC_KEY'])
+	print("hi")
 	form=AddBook_Form()
 	msg=""
 	if form.validate_on_submit():

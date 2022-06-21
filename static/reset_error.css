@@ -1,0 +1,29 @@
+body {
+	background: #0099cc;
+}
+
+.confirmation {
+	background-color: white;
+	position: absolute;
+	width:50%;
+	height:50%;
+/*
+	border-top: 1px solid #D0D0D0;
+*/
+/*
+	border-left: 1px solid #D0D0D0;
+*/
+	border-radius: 4px; 
+	box-shadow: 0px 0px 8px black;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.confirm-info {
+	line-height: 1em;
+}
+
+.btn {
+	font-size: 20px;
+}

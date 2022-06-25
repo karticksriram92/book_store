@@ -5,64 +5,70 @@
 {% endblock %}
 {% block body %}
 {% include "adm_navbar.html" %}
-<div class="container-fluid">
-	<div class="row book-page flex-nowrap">
-	<div class="flex-xl-column">
-	<div class="row book-list-titles">
+<div class="container">
+	<div class="row justify-content-center book-list-titles text-center mt-3">
 		<div class="col-2">
-			<h5>Book Cover</h5>
+			<h5>Cover</h5>
+		</div>
+		<div class="col-3">
+			<h5>Name</h5>
+		</div>
+		<div class="col-3">
+			<h5>Book Details</h5>
+		</div>
+		<div class="col-1">
+			<h5>Stock</h5>
 		</div>
 		<div class="col-2">
-			<h5>Book Name</h5>
-		</div>
-		<div class="col-2">
-			<h5>Book Author</h5>
-		</div>
-		<div class="col-2">
-			<h5>Book Publisher</h5>
-		</div>
-		<div class="col-2">
-			<h5>Book ISBN</h5>
-		</div>
-		<div class="col-2">
-			<h5>Book Price</h5>
-		</div>
-		<div class="col-2">
-			<h5>Book Stock</h5>
-		</div>
-		<div class="col-4">
-			<h5>Book Description</h5>
+			<h5>Price</h5>
 		</div>
 	</div>
-	{% for i in range(0,4) %}
-	<div class="row book-list">
+	<hr/>
+	{% for i in range(books_data | length) %}
+	<div class="row justify-content-center book-list text-center mb-3">
 		<div class="col-2">
-			<img class="book-image" src="{{ url_for('static', filename='malala_small.png') }}">
+			<img class="book-image" src="{{ url_for('static', filename=books_data[i]['b_img_small']) }}">
 		</div>
-		<div class="col-2">
-			<p>I am Malala</p>
+		<div class="col-3 pt-3">
+			<h4>{{ books_data[i]['b_name'] }}</h4>
 		</div>
-		<div class="col-2">
-			<p>Someone</p>
+		<div class="col-3 pt-3">
+			<div class="row">
+				<div class="col-6">
+					<h6 class="text-left h-50"><strong>Author:</strong></span></h6>
+					<h6 class="text-left h-50"><strong>Publisher:</strong></h6>
+					<h6 class="text-left h-20"><strong>ISBN:</strong></h6>
+				</div>
+				<div class="col-6">
+					<h6 class="h-50 text-right">{{ books_data[i]['b_author'] }}</h6>
+					<h6 class="h-50 text-right">{{ books_data[i]['b_publisher'] }}</h6>
+					<h6 class="h-20 text-right">{{ books_data[i]['b_isbn'] }}</h6>
+				</div>
+			</div>
 		</div>
-		<div class="col-2">
-			<p>Someone else</p>
+		<div class="col-1 pt-3">
+			<p>{{ books_data[i]['b_stock'] }}</p>
 		</div>
-		<div class="col-2">
-			<p>1234567890123</p>
-		</div>
-		<div class="col-2">
-			<p>100</p>
-		</div>
-		<div class="col-2">
-			<p>10</p>
-		</div>
-		<div class="col-4">
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+		<div class="col-2 pt-3">
+			<div class="row">
+				<div class="col-6">
+					<h6 class="h-50 text-left"><strong>Paperbook:</strong></h6>
+					<h6 class="h-50 text-left"><strong>ebook:</strong></h6>
+				</div>
+				<div class="col-6">
+					<h6 class="h-50 text-right">{{ books_data[i]['b_paperbook_price'] }}</h6>
+					<h6 class="h-50 text-right">{{ books_data[i]['b_ebook_price'] }}</h6>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm w-100 mt-5">
+				<div><a class="btn btn-primary mt-3 w-100" href="/admin/update_book/{{ books_data[i]['b_id'] }}">Update</a></div>
+				<div><button class="btn btn-primary mt-3 w-100">Delete</button></div>
+				</div>
+			</div>
 		</div>
 	</div>
+	<hr />
 	{% endfor %}
-	</div>
-	</div>
 </div>
 {% endblock %}

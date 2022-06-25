@@ -1,16 +1,28 @@
 /*
-.book-page {
+.book-list-titles {
 	flex-wrap: nowrap;
-	overflow-x: auto;
+	overflow:visible;
 }
-*/
 
-.book-page {
-/*
+.book-list {
 	flex-wrap: nowrap;
-*/
-	overflow-x: auto;
+	overflow:visible;
 }
+*/
+/*
+
+.col-2 {
+	border:1px solid black;
+}
+
+.col-3 {
+	border:1px solid black;
+}
+
+.col-1 {
+	border:1px solid black;
+}
+*/
 
 /*
 .testimonial-group > .row {

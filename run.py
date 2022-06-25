@@ -6,7 +6,7 @@ from pdf import pdf_page
 from search import search_page
 from success import success_page
 from view_book import view_book_page
-from admin import adm_add_book_page, adm_view_book_page
+from admin import adm_add_book_page, adm_view_book_page, adm_update_book_page
 from categorised_books import categorised_books_page
 from book_form import BookForm
 import sqlite3, uuid, stripe, json, datetime
@@ -44,7 +44,13 @@ app.register_blueprint(success_page)
 app.register_blueprint(view_book_page)
 app.register_blueprint(adm_add_book_page)
 app.register_blueprint(adm_view_book_page)
+app.register_blueprint(adm_update_book_page)
 app.register_blueprint(categorised_books_page)
+
+@app.before_request
+def before_request():
+	if request.endpoint != 'static/':
+		print("hi")
 
 @app.route("/")
 def index():
@@ -59,6 +65,7 @@ def logout():
 
 @app.route("/cart", methods=["POST", "GET"])
 def cart_page():
+	print(request.headers)
 	form = BookForm()
 	if form.validate_on_submit():
 		cart_dict= { 'source' : 'view', 'book_id' : form.book_id.data, 'paperback': form.paperback.data, 'ebook' : form.ebook.data, 'no' : 1, 'status' : form.add_to_cart.data }
@@ -67,8 +74,9 @@ def cart_page():
 	
 	if 'uid' in session:
 		cart_details = get_cart(session['uid'])
+		print(cart_details)
 		product_data, formatted_cart = format_cart(cart_details)
-		sum_data = updated_product(product_data, )
+		sum_data = updated_product(product_data)
 		if product_data:
 			checkout_session = create_checkout_session(formatted_cart)
 			products=True
@@ -80,7 +88,7 @@ def cart_page():
 	# ~ checkout_session_id=create_checkout_session(get_cart(session['uid'] if session['uid'] else ))
 	return render_template('cart.html', product_data=product_data, sum_data=sum_data, products=products, checkout_session_id=checkout_session['id'], checkout_public_key=app.config['STRIPE_PUBLIC_KEY'])
 
-# ~ #payment-stripe
+#payment-stripe
 stripe.api_key=app.config["STRIPE_SECRET_KEY"]
 
 def create_checkout_session(total_items):
@@ -105,7 +113,7 @@ api.add_resource(get_session_id, '/get_sid')
  
 class get_username(Resource):
 	def get(self):
-		return "hello world"
+		return ""
 	def post(self):
 		data = request.get_json()
 		username = get_uname(data['u_id'])
@@ -137,6 +145,7 @@ class manage_cart(Resource):
 				updated_response['session_id'] = checkout_session['id']
 				updated_response['status'] = data['status']
 				updated_response = str(updated_response).replace("'", '"')
+				print(updated_response)
 				return make_response(jsonify(updated_response), 200	)
 		else:
 			return "sorry", 500
@@ -158,6 +167,8 @@ class set_recent_views(Resource):
 api.add_resource(set_recent_views, "/addRecent")
 
 def set_recent(book_id, u_id):
+	if book_id[-1] ==  "#":
+		book_id = book_id[:-1]
 	books = get_recent(book_id, u_id)
 	time = str(datetime.datetime.now()).split('.')[0]
 	if books:
@@ -203,24 +214,29 @@ def get_recent(book_id, u_id):
 		return row['books']
 
 def updated_product(bdata, b_id=None):
+	print(len(bdata))
 	updated_dict = {}
 	if len(bdata) == 0:
 		updated_dict['book_id'] = b_id
 		response_dict = calculatePayment(bdata, updated_dict)
 		return response_dict
-	for i in range(0,len(bdata)):
-		if b_id in bdata[i]['b_id']:
-			updated_dict['book_id'] = b_id
-			updated_dict['paperback'] = str(bdata[i]['pbook_no'])
+	#for single change requests
+	if b_id:
+		for i in range(0,len(bdata)):
+			if b_id in bdata[i]['b_id']:
+				updated_dict['book_id'] = b_id
+				updated_dict['paperback'] = str(bdata[i]['pbook_no'])
+				updated_dict['ebook'] = str(bdata[i]['ebook_no'])
+				updated_dict['ebook_total'] = str(bdata[i]['b_ebook_price'])
+				updated_dict['pbook_total'] = str(bdata[i]['pbook_total'])
+				response_dict = calculatePayment(bdata, updated_dict)
+	if not b_id:
+		for i in range(0, len(bdata)):
 			updated_dict['ebook'] = str(bdata[i]['ebook_no'])
 			updated_dict['ebook_total'] = str(bdata[i]['b_ebook_price'])
 			updated_dict['pbook_total'] = str(bdata[i]['pbook_total'])
 			response_dict = calculatePayment(bdata, updated_dict)
-	if not b_id:
-		updated_dict['ebook'] = str(bdata[i]['ebook_no'])
-		updated_dict['ebook_total'] = str(bdata[i]['b_ebook_price'])
-		updated_dict['pbook_total'] = str(bdata[i]['pbook_total'])
-		response_dict = calculatePayment(bdata, updated_dict)
+	print(response_dict)
 	return response_dict
 			
 def calculatePayment(bdata, udict):
@@ -307,25 +323,31 @@ def set_cart(cart_data, uid, tname):
 def format_cart(cdetails):
 	book_details = []
 	product_list = []
+	if not cdetails['u_cart']:
+		return book_details, product_list
 	cdetails = json.loads(cdetails['u_cart'])
 	for bid in cdetails.keys():
 		book_details.append(get_book_details(bid))
-		
 	#return book_details also with product_list
 	for i in range(0,len(book_details)):
-		if cdetails[book_details[i]['b_id']]['paperback'] == 'no' and cdetails[book_details[i]['b_id']]['no'] == 1:
-			product_list.append({ "name" : book_details[i]['b_name']+"(ebook)", "quantity" :  1, "currency" : "inr", "amount" : str(int(book_details[i]['b_ebook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
+		# ~ if cdetails[book_details[i]['b_id']]['paperback'] == 'no' and int(cdetails[book_details[i]['b_id']]['no']) == 1:
+		if cdetails[book_details[i]['b_id']]['paperback'] == 'no':
+			# ~ product_list.append({ "name" : book_details[i]['b_name']+"(ebook)", "quantity" :  1, "currency" : "inr", "amount" : str(int(book_details[i]['b_ebook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
+			product_list.append({ "name" : book_details[i]['b_name']+"(ebook)", "quantity" :  1, "currency" : "inr", "amount" : str(int(book_details[i]['b_ebook_price']))+"00" })
 			book_details[i]['pbook_no'] = 0
 			book_details[i]['ebook_no'] = 1
 			book_details[i]['pbook_total'] = 0
 		elif cdetails[book_details[i]['b_id']]['ebook'] == 'no':
-			product_list.append({ "name" : book_details[i]['b_name']+"(paperbook)", "quantity" :  cdetails[book_details[i]['b_id']]['no'], "currency" : "inr", "amount" : str(int(book_details[i]['b_paperbook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
+			# ~ product_list.append({ "name" : book_details[i]['b_name']+"(paperbook)", "quantity" :  cdetails[book_details[i]['b_id']]['no'], "currency" : "inr", "amount" : str(int(book_details[i]['b_paperbook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
+			product_list.append({ "name" : book_details[i]['b_name']+"(paperbook)", "quantity" :  cdetails[book_details[i]['b_id']]['no'], "currency" : "inr", "amount" : str(int(book_details[i]['b_paperbook_price']))+"00" })
 			book_details[i]['pbook_no'] = int(cdetails[book_details[i]['b_id']]['no'])
 			book_details[i]['ebook_no'] = 0
 			book_details[i]['pbook_total'] = float(int(cdetails[book_details[i]['b_id']]['no']) * int(book_details[i]['b_paperbook_price']))
 		else:
-			product_list.append({ "name" : book_details[i]['b_name']+"(paperbook)", "quantity" :  cdetails[book_details[i]['b_id']]['no'], "currency" : "inr", "amount" : str(int(book_details[i]['b_paperbook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
-			product_list.append({ "name" : book_details[i]['b_name']+"(ebook)", "quantity" :  1, "currency" : "inr", "amount" : str(int(book_details[i]['b_ebook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
+			# ~ product_list.append({ "name" : book_details[i]['b_name']+"(paperbook)", "quantity" :  cdetails[book_details[i]['b_id']]['no'], "currency" : "inr", "amount" : str(int(book_details[i]['b_paperbook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
+			product_list.append({ "name" : book_details[i]['b_name']+"(paperbook)", "quantity" :  cdetails[book_details[i]['b_id']]['no'], "currency" : "inr", "amount" : str(int(book_details[i]['b_paperbook_price']))+"00" })
+			# ~ product_list.append({ "name" : book_details[i]['b_name']+"(ebook)", "quantity" :  1, "currency" : "inr", "amount" : str(int(book_details[i]['b_ebook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
+			product_list.append({ "name" : book_details[i]['b_name']+"(ebook)", "quantity" :  1, "currency" : "inr", "amount" : str(int(book_details[i]['b_ebook_price']))+"00" })
 			book_details[i]['pbook_no'] = int(cdetails[book_details[i]['b_id']]['no'])
 			book_details[i]['ebook_no'] = 1
 			book_details[i]['pbook_total'] = float(int(cdetails[book_details[i]['b_id']]['no']) * int(book_details[i]['b_paperbook_price']))
@@ -340,61 +362,3 @@ def get_book_details(b_id):
 	rows = cursor.fetchall()
 	conn.close()
 	return rows[0]
-
-
-
-# ~ ########Mail#########
-# ~ def send_mail(to, subject, template):
-	# ~ msg = Message(subject=subject, sender="sriram5130@gmail.com", recipients=to)
-	# ~ msg.html= template
-	# ~ mail.send(msg)
-	
-# ~ @app.route('/email', methods=["POST", "GET"])
-# ~ def handleRegister():
-	# ~ if 'uid' in session:
-		# ~ user_data=get_user_data(session['uid'])
-		# ~ email = user_data['u_email']
-	# ~ email=[]
-	# ~ email.append(email_id)
-	# ~ token = gen_conf_token(email)
-	##url = request.base_url+'/confirm/'
-	# ~ confirm_url = url_for('confirm_email', token=token)
-	##confirm_url = url_for(url, token=token,  _extrenal=True)
-	# ~ #must change splitting character based of url /e for /email
-	# ~ confirm_url = request.base_url.split('/e')[0]+confirm_url
-	# ~ html = render_template('activate.html', confirm_url=confirm_url)
-	# ~ subject = "Please confirm your email"
-	# ~ send_mail(email, subject, html)
-	# ~ return "mail sent"
-	
-	# ~ #redirect to home page
-	# ~ #saying confirmation mail is sent and user need to confirm.
-	# ~ #(use flash or alert msg like navbar alert)
-	
-########Token#########
-# ~ def gen_conf_token(email):
-	# ~ serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-	# ~ return URLSafeTimedSerializer(email, salt=app.config['SECURITY_PASSWORD_SALT'])
-	
-# ~ def confirm_token(token, expiration=862000):
-	# ~ serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-	# ~ try:
-		# ~ email = serializer.loads(token, salt=app.config['SECRET_KEY'], max_age=expiration)
-	# ~ except:
-		# ~ return False
-	# ~ else:
-		# ~ return email
-	
-# ~ @app.route('/confirm/<token>')	
-# ~ def confirm_email(token):
-	# ~ try:
-		# ~ email = confirm_token(token)
-	# ~ except:
-		# ~ print("the confirmation link is expired or failed")
-		# ~ return "not working"
-	# ~ #code for already confirmed goes here
-	
-	# ~ else:
-		# ~ print("user confirmed")
-		# ~ return "thanks for confirming"
-		# ~ #confirm user and add to db of date time now and redirect

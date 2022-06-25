@@ -101,7 +101,6 @@ def make_ratings(srdict, total_count):
 		percentage_dict[i]=int((srdict[i]/total_count)*100)
 	return percentage_dict
 	
-
 def check_review(book_id, email):
 	status=True
 	conn = sqlite3.connect("./database/bookstore.db")

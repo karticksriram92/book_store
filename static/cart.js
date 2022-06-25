@@ -62,18 +62,19 @@ function addCart(e, call_status) {
 	}
 	const ebook_selected = current.querySelector('.ebook_select').value;
 	const paperback_selected = current.querySelector('.pbook_select').value;
-	const status = call_status;
+	var status = call_status;
 	const book_id = current.id;
-	const num = current.querySelector('.pbook_input').value;
+	var num = current.querySelector('.pbook_input').value;
+	if(ebook_selected === "yes" && num === "0" ) {
+		num = 1;
+	}
+	if(ebook_selected === "no" && paperback_selected === "no") {
+		status = "delete";
+	}
 	const data = { 'source': 'cart', 'book_id' : book_id, 'ebook': ebook_selected, 'paperback': paperback_selected, 'no' : num, 'status' :  status };
+	console.log(data);
 	var result;
-	//~ const url = window.location.href+'/cart';
-	console.log("book_id");
-	console.log(book_id);
-	//~ var require = function() { return
 	getProper(data).then(r => { changeValues(r); });
-	
-	//~ require().then(function (r)  {return changeValues;} );
 }
 
 async function getProper(data) {
@@ -144,7 +145,7 @@ function getElems(tag, check_class) {
 	}
 	return;
 	}
-	if(tag === "button") {
+	if(check_class === "delete") {
 		for (var i=0; i<select_elems.length; ++i) {
 			select_elems[i].addEventListener('click', function(e) { addCart(e,'delete'); });
 		}

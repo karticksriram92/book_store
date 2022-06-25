@@ -10,6 +10,8 @@ def home():
 	if 'uid' in session:
 		recent_view = get_recent_views(session['uid'],  7)
 		print(recent_view)
+	else:
+		recent_view=""
 		# ~ recent_view = get_recent_views(session['uid'],  7, order='date')
 	return render_template("home.html", trending_book=trending_book, new_arrival=new_arrival, recent_view=recent_view)
 

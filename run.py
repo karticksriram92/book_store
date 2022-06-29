@@ -47,10 +47,10 @@ app.register_blueprint(adm_view_book_page)
 app.register_blueprint(adm_update_book_page)
 app.register_blueprint(categorised_books_page)
 
-@app.before_request
-def before_request():
-	if request.endpoint != 'static/':
-		print("hi")
+# ~ @app.before_request
+# ~ def before_request():
+	# ~ if request.endpoint != 'static/':
+		# ~ print("hi")
 
 @app.route("/")
 def index():

@@ -58,7 +58,7 @@
           </div>
           {% else %}
           <div class="col-sm p-0">
-			<button class="ebook_select" value="no">Ebook</button>
+			<button class="ebook_select" value="no" style="opacity: 0.5;">Ebook</button>
           </div>
           {% endif %}
           <div class="col-sm p-0">
@@ -90,15 +90,21 @@
           </div>
           {% else %}
           <div class="col-sm p-0">
-			<button class="pbook_select" value="no">Paperbook</button>
+			<button class="pbook_select" value="no" style="opacity: 0.5;">Paperbook</button>
           </div>
           {% endif %}
           <div class="col-sm p-0 pbook_price">
               <p>&#8377;{{ product_data[i]['b_paperbook_price'] }}</p>
           </div>
+          {% if product_data[i]['pbook_no'] | int > 0 %}
           <div class="col-sm p-0">
               <input type="number" class="pbook_input" min="0" max="{{ product_data[i]['b_stock'] }}" value="{{ product_data[i]['pbook_no'] }}">
           </div>
+          {% else %}
+          <div class="col-sm p-0">
+              <input type="number" class="pbook_input" min="0" max="{{ product_data[i]['b_stock'] }}" value="" disabled="disabled">
+          </div>
+          {% endif %}
           {% if product_data[i]['pbook_total'] %}
           <div class="col-sm p-0 pbook_total">
               <p>&#8377;{{ product_data[i]['pbook_total'] }}</p>

@@ -134,6 +134,8 @@ class manage_cart(Resource):
 	def post(self):
 		data = request.get_json()
 		if do_cart(data):
+			if data['source'] == 'view':
+				return "", 200
 			if 'uid' in session:
 				book_data, formatted_cart = format_cart(get_cart(session['uid']))
 				updated_response = updated_product(book_data, b_id=data['book_id'])
@@ -227,13 +229,13 @@ def updated_product(bdata, b_id=None):
 				updated_dict['book_id'] = b_id
 				updated_dict['paperback'] = str(bdata[i]['pbook_no'])
 				updated_dict['ebook'] = str(bdata[i]['ebook_no'])
-				updated_dict['ebook_total'] = str(bdata[i]['b_ebook_price'])
+				updated_dict['ebook_total'] = str(bdata[i]['ebook_total'])
 				updated_dict['pbook_total'] = str(bdata[i]['pbook_total'])
 				response_dict = calculatePayment(bdata, updated_dict)
 	if not b_id:
 		for i in range(0, len(bdata)):
 			updated_dict['ebook'] = str(bdata[i]['ebook_no'])
-			updated_dict['ebook_total'] = str(bdata[i]['b_ebook_price'])
+			updated_dict['ebook_total'] = str(bdata[i]['ebook_total'])
 			updated_dict['pbook_total'] = str(bdata[i]['pbook_total'])
 			response_dict = calculatePayment(bdata, updated_dict)
 	print(response_dict)
@@ -336,12 +338,14 @@ def format_cart(cdetails):
 			product_list.append({ "name" : book_details[i]['b_name']+"(ebook)", "quantity" :  1, "currency" : "inr", "amount" : str(int(book_details[i]['b_ebook_price']))+"00" })
 			book_details[i]['pbook_no'] = 0
 			book_details[i]['ebook_no'] = 1
-			book_details[i]['pbook_total'] = 0
+			book_details[i]['ebook_total'] = book_details[i]['b_ebook_price']
+			book_details[i]['pbook_total'] = 0.0
 		elif cdetails[book_details[i]['b_id']]['ebook'] == 'no':
 			# ~ product_list.append({ "name" : book_details[i]['b_name']+"(paperbook)", "quantity" :  cdetails[book_details[i]['b_id']]['no'], "currency" : "inr", "amount" : str(int(book_details[i]['b_paperbook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
 			product_list.append({ "name" : book_details[i]['b_name']+"(paperbook)", "quantity" :  cdetails[book_details[i]['b_id']]['no'], "currency" : "inr", "amount" : str(int(book_details[i]['b_paperbook_price']))+"00" })
 			book_details[i]['pbook_no'] = int(cdetails[book_details[i]['b_id']]['no'])
 			book_details[i]['ebook_no'] = 0
+			book_details[i]['ebook_total'] = 0.0
 			book_details[i]['pbook_total'] = float(int(cdetails[book_details[i]['b_id']]['no']) * int(book_details[i]['b_paperbook_price']))
 		else:
 			# ~ product_list.append({ "name" : book_details[i]['b_name']+"(paperbook)", "quantity" :  cdetails[book_details[i]['b_id']]['no'], "currency" : "inr", "amount" : str(int(book_details[i]['b_paperbook_price'])*int(cdetails[book_details[i]['b_id']]['no']))+"00" })
@@ -350,8 +354,10 @@ def format_cart(cdetails):
 			product_list.append({ "name" : book_details[i]['b_name']+"(ebook)", "quantity" :  1, "currency" : "inr", "amount" : str(int(book_details[i]['b_ebook_price']))+"00" })
 			book_details[i]['pbook_no'] = int(cdetails[book_details[i]['b_id']]['no'])
 			book_details[i]['ebook_no'] = 1
+			book_details[i]['ebook_total'] = book_details[i]['b_ebook_price']
 			book_details[i]['pbook_total'] = float(int(cdetails[book_details[i]['b_id']]['no']) * int(book_details[i]['b_paperbook_price']))
 			
+	print(book_details)
 	return book_details, product_list
 	
 def get_book_details(b_id):

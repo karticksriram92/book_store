@@ -59,9 +59,6 @@ def resize_img(img, small=False):
 	img = Image.open(img.stream)
 	resized_img = img.resize(sizes)
 	return get_img_path(resized_img)
-	# ~ img_bytes_arr= io.BytesIO()
-	# ~ new_img.save(img_bytes_arr, format="JPEG")
-	# ~ return img_bytes_arr.getvalue()
 	
 @adm_update_book_page.route('/admin/update_book/<bid>', methods=['POST','GET'])
 def update_book(bid):

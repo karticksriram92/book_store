@@ -64,6 +64,10 @@ function toggleBookOption() {
 }
 
 function addCart() {
+	
+	//loading-icon
+	document.querySelector('.load-overlay').classList.remove('d-none');
+	
 	const ebook_selected = document.getElementById('ebook').value;
 	const paperback_selected = document.getElementById('paperback').value;
 	const status = document.querySelector('.add-cart-button').id;
@@ -78,7 +82,9 @@ function addCart() {
 	})
 	.then(response => { if(response.status == 200) { 
 		changeStatus();
-		console.log(response.status); 
+		console.log(response.status);
+		//loading-icon
+		document.querySelector('.load-overlay').classList.add('d-none');
 	}});
 }
 

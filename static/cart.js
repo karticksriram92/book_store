@@ -2,7 +2,6 @@
 var stripe = Stripe(checkout_public_key);
 
 const button = document.querySelector('.make-payment');
-//~ button.addEventListener('click',  );
 
 function user_payment() {
 	console.log(checkout_session_id);
@@ -22,20 +21,6 @@ function setEvent(cs_id) {
 
 }
 
-//~ function get_id() {
-	//~ const data = { 'u_id' : 'u_id' }
-	//~ fetch('/get_sid', {
-			//~ method: 'POST',
-			//~ headers: {
-				//~ 'Content-Type':'application/json',
-				//~ },
-			//~ body: JSON.stringify(data),
-		//~ })
-		//~ .then(response => response.json())
-		//~ .then(result => setEvent(result['session_id']));
-//~ };
-//end
-
 function handleCheckBox(e) {
 	if(e.currentTarget.value === "yes") {
 		console.log("setting false")
@@ -51,6 +36,10 @@ function handleCheckBox(e) {
 }
 
 function addCart(e, call_status) {
+	
+	//loading-icon
+	document.querySelector('.load-overlay').classList.remove('d-none');
+	
 	var current = e.currentTarget;
 	while(true) {
 		if(current.classList.contains('cart-product')) {
@@ -65,7 +54,10 @@ function addCart(e, call_status) {
 	var status = call_status;
 	const book_id = current.id;
 	var num = current.querySelector('.pbook_input').value;
-	if(ebook_selected === "yes" && num === "0" ) {
+	if(num === "") {
+		num = 1;
+	}
+	if(ebook_selected === "yes" && num === "0") {
 		num = 1;
 	}
 	if(ebook_selected === "no" && paperback_selected === "no") {
@@ -105,8 +97,7 @@ function changeValues(udata) {
 	}
 	
 	if(udata['status'] === 'update') {
-		console.log("still going");
-	if(udata['ebook'] === 0) {
+	if(parseInt(udata['ebook']) === 0) {
 		product.querySelector('.ebook_input').value = "";
 		product.querySelector('.ebook_price').innerHTML = "&#8377;0.0";
 	}
@@ -114,11 +105,15 @@ function changeValues(udata) {
 		product.querySelector('.ebook_input').value = "1";
 		product.querySelector('.ebook_price').innerHTML = "&#8377;"+udata['ebook_total'];
 	}
-	if(udata['paperback'] === 0) {
+	if(parseInt(udata['paperback']) === 0) {
 		product.querySelector('.pbook_total').innerHTML = "&#8377;0.0";
+		product.querySelector('.pbook_input').value = "";
+		product.querySelector('.pbook_input').disabled = true;
 	}
 	else {
 		product.querySelector('.pbook_total').innerHTML = "&#8377;"+udata['pbook_total'];
+		product.querySelector('.pbook_input').disabled = false;
+		product.querySelector('.pbook_input').value = udata['paperback'];
 	}
 }
 	document.querySelector('.book-sum').innerHTML = udata['book_sum'];
@@ -126,7 +121,9 @@ function changeValues(udata) {
 	document.querySelector('.total-sum').innerHTML = udata['total_sum'];
 	
 	//setting session id
-	setEvent(udata['session_id']);	
+	setEvent(udata['session_id']);
+	//loading-icon
+	document.querySelector('.load-overlay').classList.add('d-none');
 }
 
 function getElems(tag, check_class) {
@@ -157,7 +154,6 @@ function getElems(tag, check_class) {
 	}
 }
 
-//~ document.addEventListener("DOMContentLoaded", get_id);
 document.addEventListener("DOMContentLoaded", function() {
 	getElems("button", "ebook_select");
 	getElems("button", "pbook_select");

@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, TextAreaField, SubmitField, IntegerField, SelectField
-from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, StopValidation
+from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, StopValidation, Optional
+from wtforms import validators
 import re
-#dkfddfk
 
 class Check_Length(object):
 	def __init__(self, message=None):
@@ -29,4 +29,3 @@ class AddBook_Form(FlaskForm):
 	stock = IntegerField(label=("Stock"), validators = [DataRequired(), NumberRange(min=0, max=1000)])
 	book_type = SelectField(label=("Book Type"), choices=[('fiction','Fiction'),('non-fiction','Non-Fiction'),('science', 'Science'),('biography','Biography')], validators= [DataRequired()])
 	submit = SubmitField(label=("Add Book"))
-

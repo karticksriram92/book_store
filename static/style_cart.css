@@ -77,12 +77,101 @@ hr {
 	transform: translate(-50%, -50%);
 }
 
-/* flip box */
+.ebook_price>p, .pbook_price>p, .pbook_total>p {
+	margin-top: 6px;
+	margin-bottom: 6px;
+}
 
+.ebook_input, .pbook_input {
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+/* flip box failed so just a filling button with sliding text*/
+.ebook_select, .pbook_select {
+	width: 80%;
+	height: 100%;
+	border-radius: 4px;
+	border-color:#75b98b;
+	outline: none !important;
+}
 
+.ebook_select:before, .pbook_select:before {
+	content: attr(data-hover);
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	left: -100%;
+	top: 20%;
+	text-align: center;
+	opacity: 0;
+	-webkit-transition: all 400ms cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
 
+.ebook_select:after, .pbook_select:after{
+	content: attr(data-static);
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	left: 0%;
+	top: 20%;
+	opacity: 1;
+	text-align: center;
+	-webkit-transition: all 400ms cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
 
+.ebook_select:hover:before, .pbook_select:hover:before {
+	left: 0%;
+	opacity: 1;
+}
 
+.ebook_select:hover:after, .pbook_select:hover:after {
+	left: 100%;
+	opacity: 0;
+}
+
+.permahover:before {
+	left: 0%;
+	opacity: 1;
+}
+
+.permahover:after {
+	left: 100%;
+	opacity: 0;
+}
+
+.permahover:hover:before {
+	left: 100%;
+	opacity: 0;
+}
+
+.permahover:hover:after {
+	left: 0%;
+	opacity: 1;
+}
+
+.ebook_select:hover, .pbook_select:hover {
+	opacity: 0.5 !important;
+	background-color: white !important;
+	border-color:black;
+}
+
+.permahover:hover {
+	opacity: 1 !important;
+	background-color: #75b98b !important;
+	color: white;
+	border-color:#75b98b !important;
+}
+
+.ebook_select, .pbook_select {
+	background-color: #75b98b;
+	color: white;
+	border-color:#75b98b;
+}
+
+.permahover {
+	background-color: white !important;
+	border-color:black;
+}
 
 
 

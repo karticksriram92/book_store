@@ -11,21 +11,20 @@
 <div class="formbox">
 	<div class="container">
 		<h1>Update Book</h1>
-		<form action="/admin/add_book" method="post" enctype="multipart/form-data">
+		<form action="" method="post" enctype="multipart/form-data">
 			<div class="row">
 				<div class="col-sm-4">
-					{{ form.csrf_token }}
 					<div class="form-group">
-						{{ form.name.label }}
-						{{ form.name(class="form-control") }}
+						<label>Name</label>
+						<input class="form-control" type="text" name="name" value="{{ book_data['b_name'] }}">
 					</div>
 					<div class="form-group">
-						{{ form.author.label }}
-						{{ form.author(class="form-control") }}
+						<label>Author</label>
+						<input class="form-control" type="text" name="author" value="{{ book_data['b_author'] }}">
 					</div>
 					<div class="form-group">
-						{{ form.publisher.label }}
-						{{ form.publisher(class="form-control") }}
+						<label>Publisher</label>
+						<input class="form-control" type="text" name="publisher" value="{{ book_data['b_publisher'] }}">
 					</div>
 				</div>
 				<div class="col-sm-8">
@@ -33,38 +32,17 @@
 				<div class="row">
 				<div class="col-sm">
 					<div class="form-group">
-						{{ form.img.label }}
-						{{ form.img(class="form-control") }}
+						<label>Image</label>
+						<input class="form-control" type="file" name="img">
 					</div>
-					{% if form.img.errors %}
-						{% for error in form.img.errors %}
-							<div class="alert alert-danger alert-dismissable fade show">
-								{{ error }}
-							</div>
-						{% endfor %}
-					{% endif %}
 					<div class="form-group">
-						{{ form.pdf.label }}
-						{{ form.pdf(class="form-control") }}
+						<label>Pdf</label>
+						<input class="form-control" type="file" name="pdf">
 					</div>
-					{% if form.pdf.errors %}
-						{% for error in form.pdf.errors %}
-							<div class="alert alert-danger alert-dismissable fade show">
-								{{ error }}
-							</div>
-						{% endfor %}
-					{% endif %}
 					<div class="form-group">
-						{{ form.isbn.label }}
-						{{ form.isbn(class="form-control") }}
+						<label>ISBN</label>
+						<input class="form-control" type="text" name="isbn" value="{{ book_data['b_isbn'] }}">
 					</div>
-					{% if form.isbn.errors %}
-						{% for error in form.isbn.errors %}
-							<div class="alert alert-danger alert-dismissable fade show">
-								{{ error }}
-							</div>
-						{% endfor %}
-					{% endif %}
 					{% if msg %}
 						<div class="alert alert-danger alert-dismissable fade show">
 							{{ msg }}
@@ -73,16 +51,21 @@
 				</div>
 				<div class="col-sm">
 					<div class="form-group">
-						{{ form.book_type.label }}
-						{{ form.book_type(class="form-control") }}
+						<label>Book Type</label>
+						<select class="form-control" name="book_type">
+							<option value="fiction"{% if rec==0 %} selected="selected"{% endif %}>Fiction</option>
+							<option value="non-fiction"{% if rec==1 %} selected="selected"{% endif %}>Non-Fiction</option>
+							<option value="science"{% if rec==2 %} selected="selected"{% endif %}>Science</option>
+							<option value="biography"{% if rec==3 %} selected="selected"{% endif %}>Biography</option>
+						</select>
 					</div>
 					<div class="form-group">
-						{{ form.price.label }}
-						{{ form.price(class="form-control") }}
+						<label>Price</label>
+						<input class="form-control" type="number" name="price" value="{{ book_data['b_paperbook_price'] }}">
 					</div>
 					<div class="form-group">
-						{{ form.stock.label }}
-						{{ form.stock(class="form-control") }}
+						<label>Stock</label>
+						<input class="form-control" type="number" name="stock" value="{{ book_data['b_stock'] }}">
 					</div>
 				</div>
 				</div>
@@ -91,14 +74,14 @@
 				<div class="row">
 					<div class="col-lg">
 						<div class="form-group">
-							{{ form.description.label }}
-							{{ form.description(class="form-control", rows="5") }}
+							<label>Description</label>
+							<textarea class="form-control" rows="5" name="description">{{ book_data['b_desc'] }}</textarea>
 						</div>
 					</div>
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-sm-12">
-							{{ form.submit(class="btn btn-primary submit-btn", value="Update Book") }}
+						<button type="submit" class="btn btn-primary submit-btn">Update Book</button>
 					</div>
 				</div>
 			</div>

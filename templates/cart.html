@@ -54,14 +54,14 @@
 		  <div class="row ml-0">
 			{% if product_data[i]['ebook_no'] == 1 %}
           <div class="col-sm p-0">
-			<button class="ebook_select" value="yes">Ebook</button>
+			<button class="ebook_select" value="yes" data-hover=" " data-static="Ebook"></button>
           </div>
           {% else %}
           <div class="col-sm p-0">
-			<button class="ebook_select" value="no" style="opacity: 0.5;">Ebook</button>
+			<button class="ebook_select permahover" value="no" data-hover=" " data-static="Ebook" style="opacity:0.5;"></button>
           </div>
           {% endif %}
-          <div class="col-sm p-0">
+          <div class="col-sm p-0 ebook_price">
               <p>&#8377;{{ product_data[i]['b_ebook_price'] }}</p>
           </div>
           {% if product_data[i]['ebook_no'] == 1 %}
@@ -86,11 +86,11 @@
           <div class="row ml-0 mt-5">
 			  {% if product_data[i]['pbook_no'] | int > 0 %}
           <div class="col-sm p-0">
-			<button class="pbook_select" value="yes">Paperbook</button>
+			<button class="pbook_select" value="yes" data-hover=" " data-static="Paperbook"></button>
           </div>
           {% else %}
           <div class="col-sm p-0">
-			<button class="pbook_select" value="no" style="opacity: 0.5;">Paperbook</button>
+			<button class="pbook_select" value="no" data-hover=" " data-static="Paperbook" style="opacity:0.5;"></button>
           </div>
           {% endif %}
           <div class="col-sm p-0 pbook_price">

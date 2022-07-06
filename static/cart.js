@@ -26,11 +26,13 @@ function handleCheckBox(e) {
 		console.log("setting false")
 		e.currentTarget.value="no";
 		e.currentTarget.style.opacity = 0.5;
+		e.currentTarget.classList.add('permahover');
 	}
 	else {
 		console.log("setting true")
 		e.currentTarget.value="yes";
 		e.currentTarget.style.opacity = 1;
+		e.currentTarget.classList.remove('permahover');
 	}
 	addCart(e, 'update');
 }

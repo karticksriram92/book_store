@@ -19,16 +19,20 @@ app.config["SECRET_KEY"] = "test"
 app.config["SECURITY_PASSWORD_SALT"] = "email-test"
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
-app.config["STRIPE_PUBLIC_KEY"]= os.environ.get('STRIPE_PUB_KEY')
-app.config["STRIPE_SECRET_KEY"]= os.environ.get('STRIPE_PVT_KEY')
+# ~ app.config["STRIPE_PUBLIC_KEY"]= os.environ.get('STRIPE_PUB_KEY')
+# ~ app.config["STRIPE_SECRET_KEY"]= os.environ.get('STRIPE_PVT_KEY')
+app.config["STRIPE_PUBLIC_KEY"]= "pk_test_51KzcRkSE3GG6tmtIKjMMMEQ5u1RrO6bc72VNQSsjktsWXyw4aXAt6Za8kEFEQIOJ9pXO1PYWkdbX5PPQFUYCozYW00wRXjLLz9"
+app.config["STRIPE_SECRET_KEY"]= "sk_test_51KzcRkSE3GG6tmtIDCHA8ybbSJgv8bTWeShIwnmsVrxP1BIavbzhnA2xt7GKNir7CzHWfQDK8d7ebQsABWtdklWJ00CXpyJJYL"
 
 app.config.update(
 	MAIL_SERVER = 'smtp.gmail.com',
 	MAIL_PORT = 465,
 	MAIL_USE_TLS = False,
 	MAIL_USE_SSL = True,
-	MAIL_USERNAME = os.environ.get('MAIL_USERNAME'),
-	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+	MAIL_USERNAME = 'sriram5130@gmail.com',
+	MAIL_PASSWORD = 'tptfqmcnkytdzqbs'
+	# ~ MAIL_USERNAME = os.environ.get('MAIL_USERNAME'),
+	# ~ MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 )
 
 app.register_blueprint(login_page)

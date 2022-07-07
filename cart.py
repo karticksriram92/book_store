@@ -188,7 +188,7 @@ def calculatePayment(bdata, udict):
 		else:
 			book_sum += bdata[i]['pbook_total']
 	udict['book_sum'] = str(book_sum)
-	udict['shipping'] = 50
+	udict['shipping'] = 50.0
 	udict['total_sum'] = str(book_sum+50)
 	return udict
 
